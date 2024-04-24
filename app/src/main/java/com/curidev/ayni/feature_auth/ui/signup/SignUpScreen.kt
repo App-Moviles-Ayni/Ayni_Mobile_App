@@ -30,6 +30,27 @@ import com.curidev.ayni.shared.ui.PasswordTextField
 @Composable
 
 fun SignUpScreen(navigateToWelcomePage: ()-> Unit, navigateToSignIn: () -> Unit){
+
+    val username = remember {
+        mutableStateOf("")
+
+    }
+
+    val email = remember {
+        mutableStateOf("")
+
+    }
+
+    val role = remember {
+        mutableStateOf("")
+
+    }
+
+    val password = remember {
+        mutableStateOf("")
+
+    }
+
     Scaffold {paddingValues ->
 
         Box(
@@ -45,37 +66,9 @@ fun SignUpScreen(navigateToWelcomePage: ()-> Unit, navigateToSignIn: () -> Unit)
             }
         }
 
-
-
         Column(modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally){
-            val username = remember {
-                mutableStateOf("")
-
-            }
-
-            val email = remember {
-                mutableStateOf("")
-
-            }
-
-            val role = remember {
-                mutableStateOf("")
-
-            }
-
-            val password = remember {
-                mutableStateOf("")
-
-            }
-
-
-
-
-
-
-
             Spacer(modifier = Modifier.padding(50.dp))
             Text(text = "Create an account", textAlign = TextAlign.Center, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Bold
                 , fontSize = 30.sp)
@@ -87,7 +80,7 @@ fun SignUpScreen(navigateToWelcomePage: ()-> Unit, navigateToSignIn: () -> Unit)
             Spacer(modifier = Modifier.padding(10.dp))
             InputTextField(input = role, placeholder = "Enter a role")
             Spacer(modifier = Modifier.padding(10.dp))
-            PasswordTextField(input = password, placeholder = "Password")
+            PasswordTextField(password = password, text = "Password")
             Spacer(modifier = Modifier.padding(25.dp))
             CustomButton1(text = "Create account") {}
             CustomTextButton1(text = "Already have an account?", navigateToSignIn)

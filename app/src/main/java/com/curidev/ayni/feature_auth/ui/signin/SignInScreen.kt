@@ -26,6 +26,15 @@ import com.curidev.ayni.shared.ui.PasswordTextField
 
 @Composable
 fun SignInScreen(navigateToWelcomePage: ()-> Unit){
+    val username = remember {
+        mutableStateOf("")
+
+    }
+
+    val password = remember {
+        mutableStateOf("")
+
+    }
 
     Scaffold {paddingValues ->
 
@@ -37,8 +46,6 @@ fun SignInScreen(navigateToWelcomePage: ()-> Unit){
         ){
             Column {
                 CustomButton2(onclick = {navigateToWelcomePage()})
-
-
             }
         }
 
@@ -47,29 +54,15 @@ fun SignInScreen(navigateToWelcomePage: ()-> Unit){
         Column(modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally){
-            val username = remember {
-                mutableStateOf("")
-
-            }
-
-            val password = remember {
-                mutableStateOf("")
-
-            }
-
-
-
-
-
-
-
             Spacer(modifier = Modifier.padding(50.dp))
-            Text(text = "Sign In", textAlign = TextAlign.Center, fontStyle = FontStyle.Normal, fontWeight = FontWeight.Bold
-                , fontSize = 30.sp)
+            Text(text = "Sign In", textAlign = TextAlign.Center,
+                fontStyle = FontStyle.Normal,
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp)
             Spacer(modifier = Modifier.padding(30.dp))
             InputTextField(input = username, placeholder = "Username")
             Spacer(modifier = Modifier.padding(10.dp))
-            PasswordTextField(input = password, placeholder = "Password")
+            PasswordTextField(password = password, text = "Password")
             Spacer(modifier = Modifier.padding(25.dp))
             CustomButton1(text = "Log In") {}
             CustomTextButton1(text = "Forgot your password?") {}

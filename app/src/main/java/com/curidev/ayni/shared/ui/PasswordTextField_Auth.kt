@@ -1,5 +1,4 @@
 package com.curidev.ayni.shared.ui
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -22,35 +21,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PasswordTextField(input: MutableState<String>, placeholder: String, modifier: Modifier = Modifier){
+fun PasswordTextField(password: MutableState<String>, text: String) {
     val isPasswordVisible = remember {
         mutableStateOf(false)
     }
     OutlinedTextField(
-        modifier = modifier.width(550.dp).padding(horizontal = 20.dp),  // Set a specific width here
-        placeholder = {
-            Text(text = placeholder)
+        modifier = Modifier
+            .width(550.dp)
+            .padding(horizontal = 20.dp),
+        placeholder = { Text(text = text) },
+        value = password.value, onValueChange = {
+            password.value = it
         },
-        visualTransformation = if (isPasswordVisible.value) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        value = input.value, onValueChange = {
-            input.value = it
-        },
+        visualTransformation = if (isPasswordVisible.value)
+            VisualTransformation.None else
+            PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = {
                 isPasswordVisible.value = !isPasswordVisible.value
             }) {
                 Icon(
-                    if (isPasswordVisible.value) {
-                        Icons.Filled.VisibilityOff
-                    } else {
-                        Icons.Filled.Visibility
-                    }, "Password"
+                    if (isPasswordVisible.value)
+                        Icons.Filled.VisibilityOff else
+                        Icons.Filled.Visibility,
+                    contentDescription = text
                 )
             }
         })
 }
+
+//modifier = modifier.width(550.dp).padding(horizontal = 20.dp),
