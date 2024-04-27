@@ -28,30 +28,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.curidev.ayni.order.domain.model.Order
+import com.curidev.ayni.order.repository.OrderRepository
 import com.curidev.ayni.shared.bottomnavigationbar.BottomNavigationBar
-import com.curidev.ayni.shared.topappbar.FilterTopAppBar
 import com.curidev.ayni.shared.topappbar.PrevTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun OrderDetails(navController: NavController) {
-    Scaffold(
-        topBar = {
-            PrevTopAppBar("Order Details", navController)
-        },
-        bottomBar = {
-            BottomNavigationBar()
-        }
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            OrderCard()
-            OrderDescription()
+fun OrderDetails(navController: NavController, id: Int) {
+    //val id = 1
+
+    val order = remember {
+        mutableStateOf<Order?>(null)
+    }
+
+    OrderRepository().getOrderById(id) {
+        order.value = it
+    }
+
+    order.value?.let {
+        Scaffold(
+            topBar = {
+                PrevTopAppBar("Order Details", navController)
+            },
+            bottomBar = {
+                BottomNavigationBar()
+            }
+        ) { paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)) {
+                OrderCard(order.value!!)
+                OrderDescription()
+            }
         }
     }
 }
 
 @Composable
-fun OrderCard() {
+fun OrderCard(order: Order) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(10.dp)) {
@@ -65,14 +78,14 @@ fun OrderCard() {
                 Text(modifier = Modifier.weight(1f),
                     style = TextStyle(fontWeight = FontWeight.Normal),
                     text = "Quantity")
-                Text(text = "1")
+                Text(text = "${order.quantity} kg")
             }
             HorizontalDivider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color(0xFF000000))
             Spacer(modifier = Modifier.padding(3.dp))
             Row {
                 Text(modifier = Modifier.weight(1f), text = "Status",
                     style = TextStyle(fontWeight = FontWeight.Normal))
-                Text(text = "Pending", style = TextStyle(fontWeight = FontWeight.Normal))
+                Text(text = "${order.status} ", style = TextStyle(fontWeight = FontWeight.Normal))
             }
         }
     }
