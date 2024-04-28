@@ -29,49 +29,58 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.curidev.ayni.order.domain.model.Order
+import com.curidev.ayni.order.domain.model.Sale
 import com.curidev.ayni.order.repository.OrderRepository
+import com.curidev.ayni.order.repository.SaleRepository
 import com.curidev.ayni.shared.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.topappbar.PrevTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun OrderDetails(navController: NavController, id: Int) {
-    //val id = 1
-
     val order = remember {
         mutableStateOf<Order?>(null)
     }
 
-    OrderRepository().getOrderById(id) {
-        order.value = it
+    val sale = remember {
+        mutableStateOf<Sale?>(null)
+    }
+
+    OrderRepository().getOrderById(id) { retrievedOrder ->
+        order.value = retrievedOrder
+        SaleRepository().getSaleById(retrievedOrder.saleId) { retrievedSale ->
+            sale.value = retrievedSale
+        }
     }
 
     order.value?.let {
-        Scaffold(
-            topBar = {
-                PrevTopAppBar("Order Details", navController)
-            },
-            bottomBar = {
-                BottomNavigationBar()
-            }
-        ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)) {
-                OrderCard(order.value!!)
-                OrderDescription()
+        sale.value?.let {
+            Scaffold(
+                topBar = {
+                    PrevTopAppBar("Order Details", navController)
+                },
+                bottomBar = {
+                    BottomNavigationBar()
+                }
+            ) { paddingValues ->
+                Column(modifier = Modifier.padding(paddingValues)) {
+                    OrderCard(order.value!!, sale.value!!)
+                    OrderDescription(order.value!!)
+                }
             }
         }
     }
 }
 
 @Composable
-fun OrderCard(order: Order) {
+fun OrderCard(order: Order, sale: Sale) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(10.dp)) {
         Column(modifier = Modifier.padding(10.dp), ) {
-            OrderImage()
+            OrderImage(sale.imageUrl)
             Spacer(modifier = Modifier.padding(5.dp))
-            Text(text = "'Planta name' Order Details",
+            Text(text = "Order details of ${sale.name} ",
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold))
             Spacer(modifier = Modifier.padding(5.dp))
             Row {
@@ -92,7 +101,7 @@ fun OrderCard(order: Order) {
 }
 
 @Composable
-fun OrderDescription() {
+fun OrderDescription(order: Order) {
     var isOpen by remember {
         mutableStateOf(false)
     }
@@ -106,8 +115,15 @@ fun OrderDescription() {
             Text(text = "Description",
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold))
             Spacer(modifier = Modifier.padding(5.dp))
-            Text(text = "We are waiting for the shipment of products by the farmer",
-                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal))
+            if(order.description.isEmpty())
+                Text(text = "No description available",
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal))
+            else {
+                Text(
+                    text = order.description,
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)
+                )
+            }
             Spacer(modifier = Modifier.padding(5.dp))
             Row {
                 Text(modifier = Modifier.weight(1f), text = "Date",
@@ -173,11 +189,10 @@ fun CancelBottomSheet(onDismissRequest: () -> Unit) {
 }
 
 @Composable
-fun OrderImage() {
-    val url = "https://cdn.donmai.us/original/cd/30/cd3038a1e4953a43c0e3620d953cdb2a.jpg"
-
+fun OrderImage(imageUrl: String) {
+    //val imageUrl = "https://cdn.donmai.us/original/cd/30/cd3038a1e4953a43c0e3620d953cdb2a.jpg"
     GlideImage(
-        imageModel = { url },
+        imageModel = { imageUrl },
         modifier = Modifier
             .fillMaxWidth()
             .height(240.dp)

@@ -21,7 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.curidev.ayni.order.domain.model.Order
+import com.curidev.ayni.order.domain.model.Sale
 import com.curidev.ayni.order.repository.OrderRepository
+import com.curidev.ayni.order.repository.SaleRepository
 import com.curidev.ayni.shared.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
@@ -76,19 +78,28 @@ fun OrdersList(orderRepository: OrderRepository = OrderRepository(), selectOrder
 fun OrderItem(order: Order, selectOrder: (Int) -> Unit) {
     val quantity = order.quantity
     val status = order.status
-    val id = order.id
-    val url = "https://cdn.donmai.us/original/cd/30/cd3038a1e4953a43c0e3620d953cdb2a.jpg"
-    ListItem(
-        modifier = Modifier.clickable(onClick = {
-            selectOrder(order.id)
-        }),
-        headlineContent = { Text(text = "Nombre planta") },
-        supportingContent = {
-            Text(text = "Quantity: $quantity\nStatus: $status")},
-        leadingContent = {
-            GlideImage(
-                imageModel = { url },
-                modifier = Modifier.size(80.dp)) },
-        trailingContent = { Text(text = "9 months ago")}
-    )
+
+    val sale = remember {
+        mutableStateOf<Sale?>(null)
+    }
+
+    SaleRepository().getSaleById(order.saleId) { retrievedSale ->
+        sale.value = retrievedSale
+    }
+
+    sale.value?.let {
+        ListItem(
+            modifier = Modifier.clickable(onClick = {
+                selectOrder(order.id)
+            }),
+            headlineContent = { Text(text = "Nombre planta") },
+            supportingContent = {
+                Text(text = "Quantity: $quantity\nStatus: $status")},
+            leadingContent = {
+                GlideImage(
+                    imageModel = { it.imageUrl },
+                    modifier = Modifier.size(80.dp)) },
+            trailingContent = { Text(text = "${order.orderedDate}")}
+        )
+    }
 }

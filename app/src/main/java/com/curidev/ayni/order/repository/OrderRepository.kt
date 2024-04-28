@@ -25,9 +25,15 @@ class OrderRepository(
                         for (orderResponse in ordersResponse) {
                             orders = orders + Order(
                                 orderResponse.id,
+                                orderResponse.description,
+                                orderResponse.totalPrice,
                                 orderResponse.quantity,
-                                orderResponse.status,
-                                orderResponse.totalPrice
+                                orderResponse.paymentMethod,
+                                orderResponse.saleId,
+                                orderResponse.orderedBy,
+                                orderResponse.acceptedBy,
+                                orderResponse.orderedDate,
+                                orderResponse.status
                             )
                         }
                         callback(orders)
