@@ -65,7 +65,7 @@ fun SignUpScreen(navigateToWelcomePage: () -> Unit, navigateToSignIn: () -> Unit
                         role = role.value,
                         password = password.value
                     )
-                ) { user ->
+                ) {
                     // Aquí puedes manejar la respuesta del registro si es necesario
                 }
             })
