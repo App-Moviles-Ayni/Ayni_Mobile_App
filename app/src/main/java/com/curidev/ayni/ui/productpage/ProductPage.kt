@@ -16,8 +16,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,9 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.curidev.ayni.feature_product.data.repository.ProductRepository
 import com.curidev.ayni.feature_product.domain.model.Product
-import com.curidev.ayni.shared.ui.filtertopappbar.MarketTopAppBar
-import com.curidev.ayni.shared.ui.filtertopappbar.ProductTopAppBar
+import com.curidev.ayni.shared.filtertopappbar.ProductTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
+import java.util.Timer
+import java.util.TimerTask
 
 val myGreenColor = Color(0xFF3EAF2C)
 
@@ -84,12 +88,20 @@ fun ProductsLatest(productRepository: ProductRepository = ProductRepository(), s
         products.value = it
     }
 
-    try {
-        productRepository.getAll { productLatest ->
-            products.value = productLatest.shuffled()
+    LaunchedEffect(true) {
+        val timer = Timer()
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                try {
+                    productRepository.getAll { productDeals ->
+                        products.value = productDeals.shuffled()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ProductsDeals", "Error al obtener la lista de productos: ${e.message}")
+                }
+            }
         }
-    } catch (e: Exception) {
-        Log.e("ProductsLatest", "Error al obtener la lista de productos: ${e.message}")
+        timer.scheduleAtFixedRate(timerTask, 0, 5000)
     }
 
     Row(
@@ -156,6 +168,9 @@ fun UserProduct(userName: String){
 
 @Composable
 fun SearchField(){
+
+    var searchtext by remember { mutableStateOf("") }
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -171,12 +186,12 @@ fun SearchField(){
         )
         Spacer(modifier = Modifier.height(9.dp))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = searchtext,
+            onValueChange = { newValue -> searchtext = newValue },
             placeholder = { Text("Search") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20),
-            textStyle = LocalTextStyle.current.copy(color = Color.White)
+            textStyle = LocalTextStyle.current.copy(color = Color.Black)
         )
     }
 }

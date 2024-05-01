@@ -9,6 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.curidev.ayni.ui.home.Home
+import com.curidev.ayni.ui.marketpage.MarketPage
 import com.curidev.ayni.ui.productpage.ProductPage
 import com.curidev.ayni.ui.theme.AyniPlatformTheme
 
@@ -21,8 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ProductPage() {
-
+                    MarketPage {
                     }
                 }
             }

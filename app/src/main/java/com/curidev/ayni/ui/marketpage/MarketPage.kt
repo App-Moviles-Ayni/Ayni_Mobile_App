@@ -23,8 +23,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,16 +36,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.curidev.ayni.feature_product.data.repository.ProductRepository
 import com.curidev.ayni.feature_product.domain.model.Product
-import com.curidev.ayni.shared.ui.filtertopappbar.MarketTopAppBar
+import com.curidev.ayni.shared.filtertopappbar.MarketTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
+import java.util.Timer
+import java.util.TimerTask
 
 @Composable
-fun MarketPage(selectProduct: (Product) -> Unit) {
+fun MarketPage(selectProduct: (Int) -> Unit) {
     Scaffold(
         topBar = {
-            MarketTopAppBar("Market" )
+            MarketTopAppBar("Market")
         },
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)){
@@ -68,35 +74,44 @@ fun MarketPage(selectProduct: (Product) -> Unit) {
 
 @Composable
 fun Search() {
+
+    var searchtext by remember { mutableStateOf("") }
+
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp),
         placeholder = { Text("Search") },
-        value = "", onValueChange = {},
+        value = searchtext,
+        onValueChange = { newValue -> searchtext = newValue },
         trailingIcon = {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(Icons.Filled.Search, contentDescription = "Search")
             }
-        })
+        }
+    )
 }
 
 @Composable
-fun ProductDeals(productRepository: ProductRepository = ProductRepository(), selectProduct: (Product) -> Unit){
+fun ProductDeals(productRepository: ProductRepository = ProductRepository(), selectProduct: (Int) -> Unit){
     val products = remember {
         mutableStateOf(emptyList<Product>())
     }
 
-    productRepository.getAll {
-        products.value = it
-    }
-
-    try {
-        productRepository.getAll { productDeals ->
-            products.value = productDeals.shuffled()
+    LaunchedEffect(true) {
+        val timer = Timer()
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                try {
+                    productRepository.getAll { productDeals ->
+                        products.value = productDeals.shuffled()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ProductsDeals", "Error al obtener la lista de productos: ${e.message}")
+                }
+            }
         }
-    } catch (e: Exception) {
-        Log.e("ProductsDeals", "Error al obtener la lista de productos: ${e.message}")
+        timer.scheduleAtFixedRate(timerTask, 0, 5000)
     }
 
     Row(
@@ -111,14 +126,14 @@ fun ProductDeals(productRepository: ProductRepository = ProductRepository(), sel
 }
 
 @Composable
-fun ProductHot(product: Product, selectProduct: (Product) -> Unit){
+fun ProductHot(product: Product, selectProduct: (Int) -> Unit){
     val name = product.name
     val recommendedCultivationDistance = product.recommendedCultivationDistance
     val recommendedCultivationDepth = product.recommendedCultivationDepth
 
     Column(
         modifier = Modifier
-            .clickable(onClick = { selectProduct(product) })
+            .clickable(onClick = { /*TODO*/ })
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -149,7 +164,7 @@ fun ProductHot(product: Product, selectProduct: (Product) -> Unit){
 }
 
 @Composable
-fun ProductsTotal(productRepository: ProductRepository = ProductRepository(), selectProduct: (Product) -> Unit){
+fun ProductsTotal(productRepository: ProductRepository = ProductRepository(), selectProduct: (Int) -> Unit){
     val products = remember {
         mutableStateOf(emptyList<Product>())
     }
@@ -184,14 +199,17 @@ fun ProductsTotal(productRepository: ProductRepository = ProductRepository(), se
 }
 
 @Composable
-fun ProductOne(product: Product, selectProduct: (Product) -> Unit) {
+fun ProductOne(product: Product, selectProduct: (Int) -> Unit) {
+
     val name = product.name
     val recommendedCultivationDistance = product.recommendedCultivationDistance
     val recommendedCultivationDepth = product.recommendedCultivationDepth
 
+
+
     Column(
         modifier = Modifier
-            .clickable(onClick = { selectProduct(product) })
+            .clickable(onClick = { selectProduct(product.id) })
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
