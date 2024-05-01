@@ -1,4 +1,5 @@
 package com.curidev.ayni.shared.topappbar
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
