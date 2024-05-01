@@ -65,7 +65,6 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.landscapist.glide)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.material.icons.extended)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
