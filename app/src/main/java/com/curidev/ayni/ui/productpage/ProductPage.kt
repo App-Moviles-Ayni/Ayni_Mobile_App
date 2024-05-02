@@ -64,7 +64,7 @@ fun ProductPage(selectProduct: (Product) -> Unit) {
                 Text(
                     text = "See All ->",
                     color = Color.Red,
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable { /*TODO*/ }
                 )
             }
             ProductsLatest(selectProduct = selectProduct)
