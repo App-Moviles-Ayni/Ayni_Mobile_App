@@ -1,5 +1,4 @@
 package com.curidev.ayni
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,7 +12,11 @@ import com.curidev.ayni.ui.detailpage.DetailPage
 import com.curidev.ayni.ui.home.Home
 import com.curidev.ayni.ui.marketpage.MarketPage
 import com.curidev.ayni.ui.productpage.ProductPage
+import androidx.compose.ui.tooling.preview.Preview
+import com.curidev.ayni.feature_payment.HomeScreen
+import com.curidev.ayni.order.ui.home.Home
 import com.curidev.ayni.ui.theme.AyniPlatformTheme
+import com.curidev.ayni.ui.welcomepage.Welcome
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   Home()
+
+                    //HomeScreen()
+                    Home()
+                    Welcome()
                 }
             }
         }
