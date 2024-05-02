@@ -1,6 +1,7 @@
 package com.curidev.ayni.feature_product.data.remote
 
-import com.curidev.ayni.core_network.RetrofitFactory
+import com.curidev.ayni.network.RetrofitFactory
+
 
 class ProductServiceFactory private constructor() {
     companion object {

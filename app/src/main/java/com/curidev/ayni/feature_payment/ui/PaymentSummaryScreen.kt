@@ -24,11 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.curidev.ayni.feature_payment.domain.Order
-import com.curidev.ayni.shared.topappbar.PrevNextTopAppBar
+import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 
 @Composable
-fun PaymentSummaryScreen(/*TODO ORDER*/ navigateTo: () -> Unit) {
+fun PaymentSummaryScreen(navigateToPaymentMethod: () -> Unit) {
     val order = remember {
         mutableStateOf<Order>(
             Order(
@@ -43,7 +43,7 @@ fun PaymentSummaryScreen(/*TODO ORDER*/ navigateTo: () -> Unit) {
         topBar = {
             PrevNextTopAppBar("Checkout")
         },
-        bottomBar = { BottomProceedComponent(order, navigateTo) }
+        bottomBar = { BottomProceedComponent(order, navigateToPaymentMethod) }
     ) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)

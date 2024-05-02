@@ -1,9 +1,7 @@
 package com.curidev.ayni.feature_auth.ui.signup
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,14 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.curidev.ayni.feature_auth.data.remote.UserRequest
 import com.curidev.ayni.feature_auth.data.repository.AuthRepository
-import com.curidev.ayni.shared.ui.CustomButton1
-import com.curidev.ayni.shared.ui.CustomButton2
-import com.curidev.ayni.shared.ui.CustomTextButton1
-import com.curidev.ayni.shared.ui.InputTextField
-import com.curidev.ayni.shared.ui.PasswordTextField
+import com.curidev.ayni.shared.ui.button.CustomButton1
+import com.curidev.ayni.shared.ui.button.CustomTextButton1
+import com.curidev.ayni.shared.ui.textfield.InputTextField
+import com.curidev.ayni.shared.ui.textfield.PasswordTextField
 
 @Composable
-fun SignUpScreen(navigateToWelcomePage: () -> Unit, navigateToSignIn: () -> Unit) {
+fun SignUpScreen(navigateToWelcomePage: () -> Unit, navigateToSignIn: () -> Unit, navigateToHome: () -> Unit) {
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val role = remember { mutableStateOf("") }

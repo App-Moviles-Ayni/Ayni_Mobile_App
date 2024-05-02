@@ -30,14 +30,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.curidev.ayni.order.domain.model.Order
 import com.curidev.ayni.order.domain.model.Sale
-import com.curidev.ayni.order.repository.OrderRepository
-import com.curidev.ayni.order.repository.SaleRepository
-import com.curidev.ayni.shared.bottomnavigationbar.BottomNavigationBar
-import com.curidev.ayni.shared.topappbar.PrevTopAppBar
+import com.curidev.ayni.order.data.repository.OrderRepository
+import com.curidev.ayni.order.data.repository.SaleRepository
+import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
+import com.curidev.ayni.shared.ui.topappbar.PrevTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun OrderDetails(navController: NavController, id: Int) {
+fun OrderDetails(
+    navController: NavController,
+    id: Int,
+    navigateToHome: () -> Unit,
+    navigateToProducts: () -> Unit,
+    navigateToOrders: () -> Unit)
+{
     val order = remember {
         mutableStateOf<Order?>(null)
     }
@@ -60,7 +66,7 @@ fun OrderDetails(navController: NavController, id: Int) {
                     PrevTopAppBar("Order Details", navController)
                 },
                 bottomBar = {
-                    BottomNavigationBar()
+                    BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
                 }
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {

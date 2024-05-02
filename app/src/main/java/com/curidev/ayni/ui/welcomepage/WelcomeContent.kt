@@ -1,4 +1,5 @@
 package com.curidev.ayni.ui.welcomepage
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -19,12 +20,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.curidev.ayni.R
-import com.curidev.ayni.shared.ui.CustomButton1
+import com.curidev.ayni.shared.ui.button.CustomButton1
 import com.skydoves.landscapist.glide.GlideImage
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun WelcomeContent(navigateToSignUp: () -> Unit, navigateToSignIn: () -> Unit){
-
+fun WelcomeContent(navigateToSignUp: () -> Unit, navigateToSignIn: () -> Unit) {
     BoxWithConstraints {
         Card(
             modifier = Modifier
@@ -34,33 +35,36 @@ fun WelcomeContent(navigateToSignUp: () -> Unit, navigateToSignIn: () -> Unit){
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = Color.White
-            ){
-                Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AyniImage()
-                Spacer(modifier = Modifier.padding(8.dp))
-                Text(text = "Stay on the top with us", fontStyle = FontStyle.Normal, fontWeight = FontWeight.Bold
-                    , fontSize = 30.sp)
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(text = "We are your new platform to recommend the best products for you", textAlign = TextAlign.Center)
-                Spacer(modifier = Modifier.padding(10.dp))
-                CustomButton1(text = "Create account", navigateToSignUp)
-                Spacer(modifier = Modifier.padding(8.dp))
-                CustomButton1(text = "Sign In", navigateToSignIn)
-
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AyniImage()
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Stay on the top with us",
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Text(
+                        text = "We are your new platform to recommend the best products for you",
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    CustomButton1(text = "Create account", navigateToSignUp)
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    CustomButton1(text = "Sign In", navigateToSignIn)
+                }
             }
-            }
-
-
         }
     }
-
-
 }
+
 @Composable
-fun AyniImage(){
-    GlideImage(imageModel = { R.drawable.ayni}, modifier = Modifier.size(280.dp))
-}
+fun AyniImage() {
+    GlideImage(imageModel = { R.drawable.ayni }, modifier = Modifier.size(280.dp))
+    }

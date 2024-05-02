@@ -1,7 +1,8 @@
 package com.curidev.ayni.feature_auth.factories
 
-
 import com.curidev.ayni.feature_auth.data.remote.AuthService
+import com.curidev.ayni.network.RetrofitFactory
+
 
 class AuthServiceFactory private constructor() {
 
@@ -15,5 +16,4 @@ class AuthServiceFactory private constructor() {
             return authService as AuthService
         }
     }
-
 }

@@ -18,14 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.curidev.ayni.shared.ui.CustomButton1
-import com.curidev.ayni.shared.ui.CustomButton2
-import com.curidev.ayni.shared.ui.CustomTextButton1
-import com.curidev.ayni.shared.ui.InputTextField
-import com.curidev.ayni.shared.ui.PasswordTextField
+import com.curidev.ayni.shared.ui.button.CustomButton1
+import com.curidev.ayni.shared.ui.button.CustomButton2
+import com.curidev.ayni.shared.ui.button.CustomTextButton1
+import com.curidev.ayni.shared.ui.textfield.InputTextField
+import com.curidev.ayni.shared.ui.textfield.PasswordTextField
 
 @Composable
-fun SignInScreen(navigateToWelcomePage: ()-> Unit){
+fun SignInScreen(navigateToWelcomePage: ()-> Unit, navigateToHome: ()-> Unit) {
     val username = remember {
         mutableStateOf("")
 
@@ -64,7 +64,7 @@ fun SignInScreen(navigateToWelcomePage: ()-> Unit){
             Spacer(modifier = Modifier.padding(10.dp))
             PasswordTextField(password = password, text = "Password")
             Spacer(modifier = Modifier.padding(25.dp))
-            CustomButton1(text = "Log In") {}
+            CustomButton1(text = "Log In", onclick = { navigateToHome() })
             CustomTextButton1(text = "Forgot your password?") {}
         }
     }

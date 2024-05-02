@@ -22,19 +22,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.curidev.ayni.order.domain.model.Order
 import com.curidev.ayni.order.domain.model.Sale
-import com.curidev.ayni.order.repository.OrderRepository
-import com.curidev.ayni.order.repository.SaleRepository
-import com.curidev.ayni.shared.bottomnavigationbar.BottomNavigationBar
-import com.curidev.ayni.shared.topappbar.FilterTopAppBar
+import com.curidev.ayni.order.data.repository.OrderRepository
+import com.curidev.ayni.order.data.repository.SaleRepository
+import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
+import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun OrdersScreen(selectOrder: (Int) -> Unit) {
+fun OrdersScreen(selectOrder: (Int) -> Unit,
+                 navigateToHome: () -> Unit,
+                 navigateToProducts: () -> Unit,
+                 navigateToOrders: () -> Unit)
+{
     Scaffold(
         topBar = {
             FilterTopAppBar("Orders")
         },
-        bottomBar = { BottomNavigationBar() }) { paddingValues ->
+        bottomBar = {
+            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
+        }
+    ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)){
             SearchField()
             OrdersList(selectOrder = selectOrder)

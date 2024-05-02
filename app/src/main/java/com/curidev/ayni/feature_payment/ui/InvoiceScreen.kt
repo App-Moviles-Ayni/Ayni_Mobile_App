@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.curidev.ayni.shared.topappbar.PrevNextTopAppBar
+import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 @Composable
 fun InvoiceScreen() {
