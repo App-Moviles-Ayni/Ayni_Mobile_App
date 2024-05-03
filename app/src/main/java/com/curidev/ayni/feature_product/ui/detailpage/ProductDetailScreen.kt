@@ -1,6 +1,5 @@
 package com.curidev.ayni.feature_product.ui.detailpage
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,9 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -34,17 +33,19 @@ import androidx.navigation.NavController
 import com.curidev.ayni.feature_product.data.repository.ProductRepository
 import com.curidev.ayni.feature_product.domain.model.Product
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
-import com.curidev.ayni.shared.ui.topappbar.MarketTopAppBar
+import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 val myGreenColor = Color(0xFF3EAF2C)
 @Composable
 fun ProductDetailScreen(
     navController: NavController,
+    navigateToPayment: () -> Unit,
     id: Int,
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
-    navigateToOrders: () -> Unit
+    navigateToOrders: () -> Unit,
+    navigateToReviews: () -> Unit
 ){
     val product = remember {
         mutableStateOf<Product?>(null)
@@ -57,10 +58,13 @@ fun ProductDetailScreen(
     product.value?.let {
         Scaffold(
             topBar = {
-                MarketTopAppBar("Market")
+                FilterTopAppBar("Market", navController)
             },
             bottomBar = {
-                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
+                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
+            },
+            floatingActionButton = {
+                OrderButton(navigateToPayment)
             }
         ) { paddingValues ->
             Column(modifier = Modifier
@@ -70,10 +74,7 @@ fun ProductDetailScreen(
             ) {
                 SearchF()
                 ProductImage(product.value!!.imageUrl)
-                Spacer(modifier = Modifier.height(4.dp))
                 PlantDescription(product.value!!)
-                Spacer(modifier = Modifier.height(1.dp))
-                OrderButton()
             }
         }
     }
@@ -106,18 +107,6 @@ fun PlantDescription(product: Product){
         )
         Text(
             text = "Depth: $recommendedCultivationDepth",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Weather: $recommendedGrowingClimate",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Soil: $recommendedSoilType",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Season: $recommendedGrowingSeason",
             modifier = Modifier.padding(start = 16.dp)
         )
 
@@ -162,29 +151,23 @@ fun ProductImage(imageUrl: String) {
         imageModel = { imageUrl },
         modifier = Modifier
             .fillMaxWidth(0.9f)
-            .height(240.dp)
+            .height(190.dp)
             .clip(RoundedCornerShape(10.dp))
     )
 }
 
 @Composable
-fun OrderButton() {
-    Box(
+fun OrderButton(navigateToPayment: () -> Unit) {
+    ExtendedFloatingActionButton(
+        onClick = { navigateToPayment() },
         modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .padding(36.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(30.dp)),
-            colors = ButtonDefaults.buttonColors(Color(0xFF3EAF2C)),
-        ) {
-            Text(text = "Order",
-                style = TextStyle(color = Color.White, fontWeight = FontWeight.Light))
-        }
-    }
+            .clip(RoundedCornerShape(30.dp)),
+        containerColor = Color(0xFF3EAF2C),
+        text = {
+            Text(
+                text = "Order",
+                style = TextStyle(color = Color.White, fontWeight = FontWeight.Light)
+            ) },
+        icon = { Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color.White) },
+    )
 }

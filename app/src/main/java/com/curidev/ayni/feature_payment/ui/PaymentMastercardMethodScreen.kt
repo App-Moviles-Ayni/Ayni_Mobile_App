@@ -18,14 +18,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.curidev.ayni.shared.ui.inputtextfield.InputTextField_Payment
 import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 @Composable
-fun PaymentMastercardMethodScreen(navigateToInvoice: () -> Unit) {
+fun PaymentMastercardMethodScreen(navController: NavController ,navigateToInvoice: () -> Unit) {
     Scaffold(
         topBar = {
-            PrevNextTopAppBar("Checkout")
+            PrevNextTopAppBar("Checkout", navController)
         },
         bottomBar = { BottomConfirmComponent(navigateToInvoice) }
     ) { paddingValues ->

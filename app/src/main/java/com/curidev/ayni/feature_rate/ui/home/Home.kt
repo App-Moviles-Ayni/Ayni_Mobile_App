@@ -1,4 +1,4 @@
-package com.curidev.ayni.ui.home
+/*package com.curidev.ayni.ui.home
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -16,26 +16,26 @@ fun Home() {
 
 
     NavHost(navController = navController, startDestination = Routes.MarketPage.route) {
-        composable(Routes.MarketPage.route) {
+        composable(Routes.RateListScreen.route) {
             MarketPage {
-                navController.navigate("${Routes.DetailPage.route}/$it")
+                navController.navigate("${Routes.RateOpinion.route}/$it")
             }
         }
-        composable(Routes.DetailPage.routeWithArgument,
-            arguments = listOf(navArgument(Routes.DetailPage.argument) {
+        composable(Routes.RateOpinion.routeWithArgument,
+            arguments = listOf(navArgument(Routes.RateOpinion.argument) {
                 type = NavType.IntType
             })
         ) {navBackStackEntry ->
-            val id = navBackStackEntry.arguments?.getInt(Routes.DetailPage.argument) as Int
-            DetailPage(navController, id)
+            val id = navBackStackEntry.arguments?.getInt(Routes.RateOpinion.argument) as Int
+            RateOpinion(navController, id)
         }
     }
 }
 
 sealed class Routes(val route: String) {
-    object MarketPage : Routes("MarketPage")
-    object DetailPage : Routes("DetailPage") {
-        const val routeWithArgument = "DetailPage/{id}"
+    object RateListScreen : Routes("RateListScreen")
+    object RateOpinion : Routes("RateOpinion") {
+        const val routeWithArgument = "RateOpinion/{id}"
         const val argument = "id"
     }
-}
+}*/

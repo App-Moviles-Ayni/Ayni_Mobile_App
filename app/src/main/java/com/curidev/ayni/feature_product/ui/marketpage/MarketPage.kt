@@ -36,27 +36,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.curidev.ayni.feature_product.data.repository.ProductRepository
 import com.curidev.ayni.feature_product.domain.model.Product
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
-import com.curidev.ayni.shared.ui.topappbar.MarketTopAppBar
+import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 import java.util.Timer
 import java.util.TimerTask
 
 @Composable
 fun MarketPage(
+    navController: NavController,
     selectProduct: (Int) -> Unit,
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
-    navigateToOrders: () -> Unit
+    navigateToOrders: () -> Unit,
+    navigateToReviews: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            MarketTopAppBar("Market")
+            FilterTopAppBar("Market", navController)
         },
         bottomBar = {
-            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
+            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)){
@@ -141,7 +144,7 @@ fun ProductHot(product: Product, selectProduct: (Int) -> Unit){
 
     Column(
         modifier = Modifier
-            .clickable(onClick = { /*TODO*/ })
+            .clickable(onClick = { selectProduct(product.id) })
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

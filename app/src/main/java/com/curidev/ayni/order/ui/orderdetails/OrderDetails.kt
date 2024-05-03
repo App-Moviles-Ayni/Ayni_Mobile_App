@@ -42,7 +42,8 @@ fun OrderDetails(
     id: Int,
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
-    navigateToOrders: () -> Unit)
+    navigateToOrders: () -> Unit,
+    navigateToReviews: () -> Unit)
 {
     val order = remember {
         mutableStateOf<Order?>(null)
@@ -66,7 +67,7 @@ fun OrderDetails(
                     PrevTopAppBar("Order Details", navController)
                 },
                 bottomBar = {
-                    BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
+                    BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
                 }
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {

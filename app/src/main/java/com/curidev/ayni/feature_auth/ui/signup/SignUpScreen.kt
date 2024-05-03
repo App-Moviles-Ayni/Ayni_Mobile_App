@@ -23,7 +23,7 @@ import com.curidev.ayni.shared.ui.textfield.InputTextField
 import com.curidev.ayni.shared.ui.textfield.PasswordTextField
 
 @Composable
-fun SignUpScreen(navigateToWelcomePage: () -> Unit, navigateToSignIn: () -> Unit, navigateToHome: () -> Unit) {
+fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val role = remember { mutableStateOf("") }
@@ -63,8 +63,8 @@ fun SignUpScreen(navigateToWelcomePage: () -> Unit, navigateToSignIn: () -> Unit
                         password = password.value
                     )
                 ) {
-                    // Aquí puedes manejar la respuesta del registro si es necesario
                 }
+                navigateToHome()
             })
             CustomTextButton1(text = "Already have an account?", navigateToSignIn)
         }

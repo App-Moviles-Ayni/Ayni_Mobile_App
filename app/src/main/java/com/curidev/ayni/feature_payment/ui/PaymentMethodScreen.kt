@@ -19,16 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 @Composable
 fun PaymentMethodScreen(
+    navController: NavController,
     navigateToMastercardMethod: () -> Unit,
     navigateToVisaMethod: () -> Unit,
 ) {
     Scaffold(
         topBar = {
-            PrevNextTopAppBar("Checkout")
+            PrevNextTopAppBar("Checkout", navController)
         },
         bottomBar = { BottomProceedComponent() }
     ) { paddingValues ->

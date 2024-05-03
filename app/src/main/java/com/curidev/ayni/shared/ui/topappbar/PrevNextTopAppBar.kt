@@ -12,13 +12,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PrevNextTopAppBar(title: String){
+fun PrevNextTopAppBar(title: String, navController: NavController){
     CenterAlignedTopAppBar(modifier = Modifier.fillMaxWidth(), title = { Text(title) },
         navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "Previous")
             }
         },

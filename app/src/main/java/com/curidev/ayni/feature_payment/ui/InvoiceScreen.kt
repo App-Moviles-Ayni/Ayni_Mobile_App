@@ -20,15 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 @Composable
-fun InvoiceScreen() {
+fun InvoiceScreen(
+    navController: NavController,
+    navigateToProducts: () -> Unit) {
     Scaffold(
         topBar = {
-            PrevNextTopAppBar("Checkout")
+            PrevNextTopAppBar("Checkout", navController = navController)
         },
-        bottomBar = { ExitComponent() }
+        bottomBar = { ExitComponent(navigateToProducts) }
     ) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)
@@ -93,14 +96,14 @@ fun InvoiceComponent() {
 }
 
 @Composable
-fun ExitComponent() {
+fun ExitComponent(navigateToProducts: () -> Unit) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
             .padding(30.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Button(onClick = { /*TODO NAVIGATE TO PRODUCTS*/ },
+        Button(onClick = { navigateToProducts() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 20.dp)) {

@@ -23,12 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.curidev.ayni.feature_payment.domain.Order
 import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 
 @Composable
-fun PaymentSummaryScreen(navigateToPaymentMethod: () -> Unit) {
+fun PaymentSummaryScreen(
+    navController: NavController,
+    navigateToPaymentMethod: () -> Unit) {
     val order = remember {
         mutableStateOf<Order>(
             Order(
@@ -41,7 +44,7 @@ fun PaymentSummaryScreen(navigateToPaymentMethod: () -> Unit) {
     }
     Scaffold(
         topBar = {
-            PrevNextTopAppBar("Checkout")
+            PrevNextTopAppBar("Checkout", navController)
         },
         bottomBar = { BottomProceedComponent(order, navigateToPaymentMethod) }
     ) { paddingValues ->

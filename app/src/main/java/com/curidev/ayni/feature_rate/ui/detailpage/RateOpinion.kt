@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.curidev.ayni.feature_product.data.repository.ProductRepository
 import com.curidev.ayni.feature_product.domain.model.Product
-import com.curidev.ayni.shared.filtertopappbar.MarketTopAppBar
+import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 val myGreenColor = Color(0xFF3EAF2C)
 @Composable
-fun DetailPage(navController: NavController, id: Int){
+fun RateOpinion(navController: NavController, id: Int){
     val product = remember {
         mutableStateOf<Product?>(null)
     }
@@ -50,7 +50,7 @@ fun DetailPage(navController: NavController, id: Int){
     product.value?.let {
         Scaffold(
             topBar = {
-                MarketTopAppBar("Market")
+                FilterTopAppBar("Market", navController)
             }
         ) { paddingValues ->
             Column(modifier = Modifier

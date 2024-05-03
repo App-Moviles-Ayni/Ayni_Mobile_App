@@ -6,6 +6,8 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface SaleService {
+    @GET("sales")
+    fun getAll(): Call<List<SaleResponse>>
     @GET("sales/{saleId}")
     fun getSaleById(@Path("saleId") id: Int): Call<Sale>
 }

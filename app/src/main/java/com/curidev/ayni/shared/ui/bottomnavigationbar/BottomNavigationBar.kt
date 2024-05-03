@@ -16,7 +16,8 @@ import androidx.compose.runtime.Composable
 fun BottomNavigationBar(
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
-    navigateToOrders: () -> Unit)
+    navigateToOrders: () -> Unit,
+    navigateToReviews: () -> Unit)
 {
     Text(text = "Bottom Navigation Bar")
     NavigationBar() {
@@ -38,7 +39,7 @@ fun BottomNavigationBar(
                 Icon(Icons.Filled.ShoppingCart, contentDescription = "Shopping")
             }
         )
-        NavigationBarItem(selected = false, onClick = { /*TODO*/ },
+        NavigationBarItem(selected = false, onClick = { navigateToReviews() },
             label = { Text("Review") },
             icon = {
                 Icon(Icons.Filled.Star, contentDescription = "Review")

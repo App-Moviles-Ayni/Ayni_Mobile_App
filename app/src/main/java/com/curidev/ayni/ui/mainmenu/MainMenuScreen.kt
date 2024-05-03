@@ -46,14 +46,15 @@ fun MainMenuScreen(
     selectProduct: (Int) -> Unit,
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
-    navigateToOrders: () -> Unit
+    navigateToOrders: () -> Unit,
+    navigateToReviews: () -> Unit
 ) {
     Scaffold(
         topBar = {
             ProductTopAppBar("" )
         },
         bottomBar = {
-            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
+            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
         }
     ) {  paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)){

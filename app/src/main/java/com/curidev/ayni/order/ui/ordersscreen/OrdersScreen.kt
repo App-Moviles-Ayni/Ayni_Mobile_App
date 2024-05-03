@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.curidev.ayni.order.domain.model.Order
 import com.curidev.ayni.order.domain.model.Sale
 import com.curidev.ayni.order.data.repository.OrderRepository
@@ -29,17 +30,19 @@ import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun OrdersScreen(selectOrder: (Int) -> Unit,
+fun OrdersScreen(navController: NavController,
+                 selectOrder: (Int) -> Unit,
                  navigateToHome: () -> Unit,
                  navigateToProducts: () -> Unit,
-                 navigateToOrders: () -> Unit)
+                 navigateToOrders: () -> Unit,
+                 navigateToReviews: () -> Unit)
 {
     Scaffold(
         topBar = {
-            FilterTopAppBar("Orders")
+            FilterTopAppBar("Orders", navController)
         },
         bottomBar = {
-            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders)
+            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews)
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)){
@@ -99,7 +102,7 @@ fun OrderItem(order: Order, selectOrder: (Int) -> Unit) {
             modifier = Modifier.clickable(onClick = {
                 selectOrder(order.id)
             }),
-            headlineContent = { Text(text = "Nombre planta") },
+            headlineContent = { Text(text = "${it.name}") },
             supportingContent = {
                 Text(text = "Quantity: $quantity\nStatus: $status")},
             leadingContent = {

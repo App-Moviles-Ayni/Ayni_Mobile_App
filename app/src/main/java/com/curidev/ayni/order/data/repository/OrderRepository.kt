@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class OrderRepository(
+class   OrderRepository(
     private val orderService: OrderService = OrderServiceFactory.getOrderService()
 ) {
     fun getAll(callback: (List<Order>) -> Unit) {
