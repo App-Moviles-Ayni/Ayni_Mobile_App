@@ -1,6 +1,6 @@
-package com.curidev.ayni.order.data.remote
+package com.curidev.ayni.feature_order.data.remote
 
-import com.curidev.ayni.order.domain.model.Sale
+import com.curidev.ayni.feature_order.domain.model.Sale
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

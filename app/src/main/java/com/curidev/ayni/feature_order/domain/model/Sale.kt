@@ -1,4 +1,4 @@
-package com.curidev.ayni.order.domain.model
+package com.curidev.ayni.feature_order.domain.model
 
 data class Sale(
     val id: Int,

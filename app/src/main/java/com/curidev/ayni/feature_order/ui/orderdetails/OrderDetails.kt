@@ -1,4 +1,4 @@
-package com.curidev.ayni.order.ui.orderdetails
+package com.curidev.ayni.feature_order.ui.orderdetails
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,10 +28,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.curidev.ayni.order.domain.model.Order
-import com.curidev.ayni.order.domain.model.Sale
-import com.curidev.ayni.order.data.repository.OrderRepository
-import com.curidev.ayni.order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Order
+import com.curidev.ayni.feature_order.domain.model.Sale
+import com.curidev.ayni.feature_order.data.repository.OrderRepository
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.PrevTopAppBar
 import com.skydoves.landscapist.glide.GlideImage

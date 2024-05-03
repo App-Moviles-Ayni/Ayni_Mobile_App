@@ -1,4 +1,4 @@
-package com.curidev.ayni.order.data.remote
+package com.curidev.ayni.feature_order.data.remote
 
 import com.curidev.ayni.network.RetrofitFactory
 

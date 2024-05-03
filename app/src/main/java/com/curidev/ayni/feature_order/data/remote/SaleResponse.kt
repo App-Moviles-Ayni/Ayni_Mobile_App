@@ -1,4 +1,4 @@
-package com.curidev.ayni.order.data.remote
+package com.curidev.ayni.feature_order.data.remote
 
 data class SaleResponse(
     val id: Int,

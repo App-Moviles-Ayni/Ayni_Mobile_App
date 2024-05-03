@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.curidev.ayni.feature_product.domain.model.Rate
 import com.curidev.ayni.feature_rate.data.repository.RateRepository
-import com.curidev.ayni.order.data.repository.SaleRepository
-import com.curidev.ayni.order.domain.model.Sale
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage

@@ -12,17 +12,14 @@ import com.curidev.ayni.feature_payment.ui.PaymentMastercardMethodScreen
 import com.curidev.ayni.feature_payment.ui.PaymentMethodScreen
 import com.curidev.ayni.feature_payment.ui.PaymentSummaryScreen
 import com.curidev.ayni.feature_payment.ui.PaymentVisaMethodScreen
-import com.curidev.ayni.order.ui.orderdetails.OrderDetails
-import com.curidev.ayni.order.ui.ordersscreen.OrdersScreen
+import com.curidev.ayni.feature_order.ui.orderdetails.OrderDetails
+import com.curidev.ayni.feature_order.ui.ordersscreen.OrdersScreen
 import com.curidev.ayni.feature_product.ui.detailpage.ProductDetailScreen
 import com.curidev.ayni.feature_product.ui.marketpage.MarketPage
-import com.curidev.ayni.feature_rate.ui.RateCardDetails
 import com.curidev.ayni.feature_rate.ui.RatesListScrin
 import com.curidev.ayni.feature_rate.ui.ratedetailsfloatingcard.RateDetailsFloatingCard
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
-import com.curidev.ayni.ui.detailpage.RateOpinion
 import com.curidev.ayni.ui.mainmenu.MainMenuScreen
-import com.curidev.ayni.ui.marketpage.RateListScreen
 
 @Composable
 fun Home() {

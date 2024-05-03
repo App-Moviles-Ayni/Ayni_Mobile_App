@@ -1,10 +1,10 @@
-package com.curidev.ayni.order.data.repository
+package com.curidev.ayni.feature_order.data.repository
 
 import android.util.Log
-import com.curidev.ayni.order.domain.model.Order
-import com.curidev.ayni.order.data.remote.OrderResponse
-import com.curidev.ayni.order.data.remote.OrderService
-import com.curidev.ayni.order.data.remote.OrderServiceFactory
+import com.curidev.ayni.feature_order.domain.model.Order
+import com.curidev.ayni.feature_order.data.remote.OrderResponse
+import com.curidev.ayni.feature_order.data.remote.OrderService
+import com.curidev.ayni.feature_order.data.remote.OrderServiceFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
