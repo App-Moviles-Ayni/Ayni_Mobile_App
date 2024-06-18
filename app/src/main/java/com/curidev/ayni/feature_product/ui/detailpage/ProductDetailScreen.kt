@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,8 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.curidev.ayni.feature_product.data.repository.ProductRepository
-import com.curidev.ayni.feature_product.domain.model.Product
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
@@ -40,31 +41,31 @@ val myGreenColor = Color(0xFF3EAF2C)
 @Composable
 fun ProductDetailScreen(
     navController: NavController,
-    navigateToPayment: () -> Unit,
+    navigateToPayment: (Int) -> Unit,
     id: Int,
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
     navigateToOrders: () -> Unit,
     navigateToReviews: () -> Unit
 ){
-    val product = remember {
-        mutableStateOf<Product?>(null)
+    val sale = remember { mutableStateOf<Sale?>(null) }
+
+    LaunchedEffect(id) {
+        SaleRepository().getSaleById(id) { retrievedProduct ->
+            sale.value = retrievedProduct
+        }
     }
 
-    ProductRepository().getProductById(id) { retrievedProduct ->
-        product.value = retrievedProduct
-    }
-
-    product.value?.let {
+    sale.value?.let {
         Scaffold(
             topBar = {
                 FilterTopAppBar("Market", navController)
             },
             bottomBar = {
-                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
+                BottomNavigationBar(navigateToHome, navigateToProducts, navigateToOrders, navigateToReviews)
             },
             floatingActionButton = {
-                OrderButton(navigateToPayment)
+                OrderButton(sale.value!!, navigateToPayment)
             }
         ) { paddingValues ->
             Column(modifier = Modifier
@@ -73,53 +74,50 @@ fun ProductDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SearchF()
-                ProductImage(product.value!!.imageUrl)
-                PlantDescription(product.value!!)
+                ProductImage(sale.value!!.imageUrl)
+                PlantDescription(sale.value!!)
             }
         }
     }
 }
 
 @Composable
-fun PlantDescription(product: Product){
-
-    val recommendedCultivationDistance = product.recommendedCultivationDistance
-    val recommendedCultivationDepth = product.recommendedCultivationDepth
-    val recommendedGrowingClimate = product.recommendedGrowingClimate
-    val recommendedSoilType = product.recommendedSoilType
-    val recommendedGrowingSeason = product.recommendedGrowingSeason
-    val description = product.description
-
+fun PlantDescription(sale: Sale){
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Text(
-            "Plant Details",
-            style = TextStyle(fontWeight = FontWeight.Bold),
-            fontSize = 20.sp,
-            modifier = Modifier.padding(16.dp)
-        )
-        Text(
-            text = "Distance: $recommendedCultivationDistance",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Depth: $recommendedCultivationDepth",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            "Plant Description",
+            "Sale Description",
             style = TextStyle(fontWeight = FontWeight.Bold),
             fontSize = 20.sp,
             modifier = Modifier.padding(16.dp)
         )
         Text(
-            text = "Description: $description",
+            text = sale.description,
+            modifier = Modifier.padding(start = 16.dp)
+        )
+        Text(
+            "Price",
+            style = TextStyle(fontWeight = FontWeight.Bold),
+            fontSize = 20.sp,
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            text = "S/ ${sale.unitPrice} per unit",
+            modifier = Modifier.padding(start = 16.dp)
+        )
+        Text(
+            "Stock",
+            style = TextStyle(fontWeight = FontWeight.Bold),
+            fontSize = 20.sp,
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            text = "${sale.quantity} Kg",
             modifier = Modifier.padding(start = 16.dp)
         )
     }
@@ -127,7 +125,6 @@ fun PlantDescription(product: Product){
 
 @Composable
 fun SearchF() {
-
     var searchtext by remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -157,15 +154,15 @@ fun ProductImage(imageUrl: String) {
 }
 
 @Composable
-fun OrderButton(navigateToPayment: () -> Unit) {
+fun OrderButton(sale: Sale, navigateToPayment: (Int) -> Unit) {
     ExtendedFloatingActionButton(
-        onClick = { navigateToPayment() },
+        onClick = { navigateToPayment(sale.id) },
         modifier = Modifier
             .clip(RoundedCornerShape(30.dp)),
         containerColor = Color(0xFF3EAF2C),
         text = {
             Text(
-                text = "Order",
+                text = "Order Now",
                 style = TextStyle(color = Color.White, fontWeight = FontWeight.Light)
             ) },
         icon = { Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color.White) },

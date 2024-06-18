@@ -72,7 +72,7 @@ fun OrderDetails(
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
                     OrderCard(order.value!!, sale.value!!)
-                    OrderDescription(order.value!!)
+                    OrderDescription(order.value!!, navController)
                 }
             }
         }
@@ -108,7 +108,7 @@ fun OrderCard(order: Order, sale: Sale) {
 }
 
 @Composable
-fun OrderDescription(order: Order) {
+fun OrderDescription(order: Order, navController: NavController) {
     var isOpen by remember {
         mutableStateOf(false)
     }
@@ -135,7 +135,7 @@ fun OrderDescription(order: Order) {
             Row {
                 Text(modifier = Modifier.weight(1f), text = "Date",
                     style = TextStyle(fontWeight = FontWeight.Normal))
-                Text(modifier = Modifier.padding(5.dp), text = "25 Nov 2024",
+                Text(modifier = Modifier.padding(5.dp), text = order.orderedDate,
                     style = TextStyle(fontWeight = FontWeight.Normal))
             }
             Button(
@@ -149,13 +149,15 @@ fun OrderDescription(order: Order) {
     }
 
     if (isOpen) {
-        CancelBottomSheet(onDismissRequest = { isOpen = false })
+        CancelBottomSheet(order, navController, onDismissRequest = { isOpen = false })
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CancelBottomSheet(onDismissRequest: () -> Unit) {
+fun CancelBottomSheet(order: Order, navController: NavController, onDismissRequest: () -> Unit) {
+    val orderRepository = OrderRepository()
+
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         Box(
             modifier = Modifier
@@ -185,7 +187,19 @@ fun CancelBottomSheet(onDismissRequest: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color.Red),
-                    onClick = { onDismissRequest() }) {
+                    onClick = {
+                        orderRepository.deleteOrderById(order.id) {isSuccess ->
+                            if (isSuccess) {
+                                onDismissRequest()
+                                navController.popBackStack(
+                                    route = "OrdersScreen",
+                                    inclusive = false
+                                )
+                            } else {
+
+                            }
+                        }
+                    }) {
                     Text(text = "Yes",
                         style = TextStyle(color = Color.White, fontWeight = FontWeight.Light))
                 }
@@ -197,7 +211,6 @@ fun CancelBottomSheet(onDismissRequest: () -> Unit) {
 
 @Composable
 fun OrderImage(imageUrl: String) {
-    //val imageUrl = "https://cdn.donmai.us/original/cd/30/cd3038a1e4953a43c0e3620d953cdb2a.jpg"
     GlideImage(
         imageModel = { imageUrl },
         modifier = Modifier

@@ -37,8 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.curidev.ayni.feature_product.data.repository.ProductRepository
-import com.curidev.ayni.feature_product.domain.model.Product
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
@@ -85,7 +85,6 @@ fun MarketPage(
 
 @Composable
 fun Search() {
-
     var searchtext by remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -104,9 +103,9 @@ fun Search() {
 }
 
 @Composable
-fun ProductDeals(productRepository: ProductRepository = ProductRepository(), selectProduct: (Int) -> Unit){
+fun ProductDeals(saleRepository: SaleRepository = SaleRepository(), selectProduct: (Int) -> Unit){
     val products = remember {
-        mutableStateOf(emptyList<Product>())
+        mutableStateOf(emptyList<Sale>())
     }
 
     LaunchedEffect(true) {
@@ -114,7 +113,7 @@ fun ProductDeals(productRepository: ProductRepository = ProductRepository(), sel
         val timerTask = object : TimerTask() {
             override fun run() {
                 try {
-                    productRepository.getAll { productDeals ->
+                    saleRepository.getAll { productDeals ->
                         products.value = productDeals.shuffled()
                     }
                 } catch (e: Exception) {
@@ -137,19 +136,17 @@ fun ProductDeals(productRepository: ProductRepository = ProductRepository(), sel
 }
 
 @Composable
-fun ProductHot(product: Product, selectProduct: (Int) -> Unit){
-    val name = product.name
-    val recommendedCultivationDistance = product.recommendedCultivationDistance
-    val recommendedCultivationDepth = product.recommendedCultivationDepth
+fun ProductHot(sale: Sale, selectProduct: (Int) -> Unit){
+    val name = sale.name
 
     Column(
         modifier = Modifier
-            .clickable(onClick = { selectProduct(product.id) })
+            .clickable(onClick = { selectProduct(sale.id) })
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            imageModel = { product.imageUrl },
+            imageModel = { sale.imageUrl },
             modifier = Modifier
                 .width(100.dp)
                 .height(100.dp)
@@ -164,28 +161,30 @@ fun ProductHot(product: Product, selectProduct: (Int) -> Unit){
             textAlign = TextAlign.Center
         )
         Text(
-            text = "$recommendedCultivationDistance",
+            text = "S/ ${sale.unitPrice}",
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "$recommendedCultivationDepth",
+            text = "Stock: ${sale.quantity}",
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-fun ProductsTotal(productRepository: ProductRepository = ProductRepository(), selectProduct: (Int) -> Unit){
+fun ProductsTotal(saleRepository: SaleRepository = SaleRepository(), selectProduct: (Int) -> Unit){
     val products = remember {
-        mutableStateOf(emptyList<Product>())
+        mutableStateOf(emptyList<Sale>())
     }
 
-    productRepository.getAll {
+    saleRepository.getAll {
         products.value = it
     }
 
     try {
-        productRepository.getAll { productTotal ->
+        saleRepository.getAll { productTotal ->
             products.value = productTotal
         }
     } catch (e: Exception) {
@@ -210,22 +209,18 @@ fun ProductsTotal(productRepository: ProductRepository = ProductRepository(), se
 }
 
 @Composable
-fun ProductOne(product: Product, selectProduct: (Int) -> Unit) {
+fun ProductOne(sale: Sale, selectProduct: (Int) -> Unit) {
 
-    val name = product.name
-    val recommendedCultivationDistance = product.recommendedCultivationDistance
-    val recommendedCultivationDepth = product.recommendedCultivationDepth
-
-
+    val name = sale.name
 
     Column(
         modifier = Modifier
-            .clickable(onClick = { selectProduct(product.id) })
+            .clickable(onClick = { selectProduct(sale.id) })
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            imageModel = { product.imageUrl },
+            imageModel = { sale.imageUrl },
             modifier = Modifier
                 .width(100.dp)
                 .height(100.dp)
@@ -240,11 +235,13 @@ fun ProductOne(product: Product, selectProduct: (Int) -> Unit) {
             textAlign = TextAlign.Center
         )
         Text(
-            text = "$recommendedCultivationDistance",
+            text = "S/ ${sale.unitPrice}",
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "$recommendedCultivationDepth",
+            text = "Stock: ${sale.quantity}",
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
     }

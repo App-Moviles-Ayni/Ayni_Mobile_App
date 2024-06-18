@@ -37,7 +37,7 @@ fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.padding(50.dp))
             Text(
-                text = "Create an account",
+                text = "Create a merchant account",
                 textAlign = TextAlign.Center,
                 fontStyle = FontStyle.Normal,
                 fontWeight = FontWeight.Bold,
@@ -49,8 +49,6 @@ fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
             Spacer(modifier = Modifier.padding(10.dp))
             InputTextField(input = email, placeholder = "Email address")
             Spacer(modifier = Modifier.padding(10.dp))
-            InputTextField(input = role, placeholder = "Enter a role")
-            Spacer(modifier = Modifier.padding(10.dp))
             PasswordTextField(password = password, text = "Password")
             Spacer(modifier = Modifier.padding(25.dp))
             // Agregamos el evento onclick a CustomButton1
@@ -59,7 +57,7 @@ fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
                     UserRequest(
                         username = username.value,
                         email = email.value,
-                        role = role.value,
+                        role = "merchant",
                         password = password.value
                     )
                 ) {

@@ -9,5 +9,5 @@ interface SaleService {
     @GET("sales")
     fun getAll(): Call<List<SaleResponse>>
     @GET("sales/{saleId}")
-    fun getSaleById(@Path("saleId") id: Int): Call<Sale>
+    fun getSaleById(@Path("saleId") saleId: Int): Call<Sale>
 }

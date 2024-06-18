@@ -12,6 +12,26 @@ import retrofit2.Response
 class   OrderRepository(
     private val orderService: OrderService = OrderServiceFactory.getOrderService()
 ) {
+    fun createOrder(order: Order, callback: (Order) -> Unit) {
+        val createOrder = orderService.createOrder(order)
+
+        createOrder.enqueue(object: Callback<Order> {
+            override fun onResponse(
+                call: Call<Order>,
+                response: Response<Order>) {
+                    if (response.isSuccessful) {
+                        callback(response.body() as Order)
+                    }
+                }
+
+            override fun onFailure(call: Call<Order>, t: Throwable) {
+                t.message?.let {
+                    Log.d("OrderRepository", it)
+                }
+            }
+        })
+    }
+
     fun getAll(callback: (List<Order>) -> Unit) {
         val getAll = orderService.getAll()
 
@@ -64,6 +84,26 @@ class   OrderRepository(
                 t.message?.let {
                     Log.d("OrderRepository", it)
                 }
+            }
+        })
+    }
+
+    fun deleteOrderById(id: Int, callback: (Boolean) -> Unit) {
+        val deleteOrderById = orderService.deleteOrderById(id = id)
+
+        deleteOrderById.enqueue(object : Callback<Order> {
+            override fun onResponse(call: Call<Order>, response: Response<Order>) {
+                if (response.isSuccessful) {
+                    callback(true)
+                } else {
+                    Log.d("OrderRepository", "Failed to delete order. Error: ${response.message()}")
+                    callback(false)
+                }
+            }
+
+            override fun onFailure(call: Call<Order>, t: Throwable) {
+                Log.d("OrderRepository", "Failed to delete order. Error: ${t.message}")
+                callback(false)
             }
         })
     }

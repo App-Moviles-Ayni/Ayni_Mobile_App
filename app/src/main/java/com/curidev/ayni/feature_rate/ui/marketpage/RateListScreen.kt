@@ -32,13 +32,13 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.TextField
 import androidx.compose.ui.graphics.Color
-import com.curidev.ayni.feature_product.domain.model.Product
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.ui.productpage.ProductItemWithRatingAndPrice
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun RateListScreen(
-    product: Product,
+    sale: Sale,
     rating: Float,
     price: Double,
     onRateChange: (Float) -> Unit
@@ -54,11 +54,11 @@ fun RateListScreen(
                     .width(100.dp)
                     .height(100.dp),
                 //contentDescription = "Imagen del producto ${product.name}",
-                imageModel = { product.imageUrl },
+                imageModel = { sale.imageUrl },
             )
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = product.name, style = TextStyle(fontWeight = FontWeight.Bold))
-                Text(text = product.description)
+                Text(text = sale.name, style = TextStyle(fontWeight = FontWeight.Bold))
+                Text(text = sale.description)
                 Row(modifier = Modifier.fillMaxWidth()) {
                     for (i in 0 until rating.toInt()) {
                         Icon(
@@ -106,10 +106,10 @@ fun RateListScreen(
 
 @Composable
 fun ProductItemWithAddToCartButton(
-    product: Product,
+    sale: Sale,
     rating: Float,
     price: Double,
-    onAddToCart: (Product) -> Unit
+    onAddToCart: (Sale) -> Unit
 ) {
     // ... (Similar to ProductItemWithRatingAndPrice)
 
@@ -120,7 +120,7 @@ fun ProductItemWithAddToCartButton(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(onClick = { onAddToCart(product) }) {
+        Button(onClick = { onAddToCart(sale) }) {
             Text("Añadir al carrito")
         }
     }
@@ -130,8 +130,8 @@ fun ProductItemWithAddToCartButton(
 @Composable
 fun ProductSearchResults(
     searchQuery: String,
-    products: List<Product>,
-    onProductClick: (Product) -> Unit
+    sales: List<Sale>,
+    onProductClick: (Sale) -> Unit
 ) {
     var currentSearchQuery by remember { mutableStateOf(searchQuery) }
 
@@ -144,7 +144,7 @@ fun ProductSearchResults(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val filteredProducts = products.filter {
+        val filteredProducts = sales.filter {
             it.name.contains(currentSearchQuery, true) ||
                     it.description.contains(currentSearchQuery, true)
         }
@@ -155,7 +155,7 @@ fun ProductSearchResults(
             LazyColumn {
                 items(filteredProducts) { product ->
                     ProductItemWithRatingAndPrice(
-                        product = product,
+                        sale = product,
                         rating = 4.0f, // Replace with actual rating
                         price = 10.0, // Replace with actual price
                         onClick = { onProductClick(product) }

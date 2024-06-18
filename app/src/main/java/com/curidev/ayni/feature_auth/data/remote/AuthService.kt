@@ -10,7 +10,9 @@ import retrofit2.http.Query
 interface AuthService {
 
     @GET("auth/signin")
-    fun signIn(@Query("username") username: String, @Query("password") password: String): Call<List<User>>
+    fun signIn(
+        @Query("username") username: String,
+        @Query("password") password: String): Call<List<User>>
 
     @POST("auth/signup")
     fun signUp(@Body request: UserRequest): Call<User>

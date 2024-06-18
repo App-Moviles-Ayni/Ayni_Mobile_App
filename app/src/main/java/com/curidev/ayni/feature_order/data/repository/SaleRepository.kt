@@ -27,7 +27,7 @@ class SaleRepository(
                                 saleResponse.id,
                                 saleResponse.name,
                                 saleResponse.description,
-                                saleResponse.price,
+                                saleResponse.unitPrice,
                                 saleResponse.quantity,
                                 saleResponse.imageUrl,
                                 saleResponse.userId
@@ -46,17 +46,18 @@ class SaleRepository(
     }
 
     fun getSaleById(id: Int, callback: (Sale) -> Unit) {
-        val getSaleById = saleService.getSaleById(id = id)
+        val getSaleById = saleService.getSaleById(saleId = id)
 
         getSaleById.enqueue(object: Callback<Sale> {
             override fun onResponse(
                 call: Call<Sale>,
-                response: Response<Sale>
-            ) {
-                    if (response.isSuccessful) {
-                        callback(response.body() as Sale)
+                response: Response<Sale>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { sale ->
+                        callback(sale)
                     }
                 }
+            }
 
             override fun onFailure(call: Call<Sale>, t: Throwable) {
                 t.message?.let {
@@ -64,6 +65,5 @@ class SaleRepository(
                 }
             }
         })
-
     }
 }

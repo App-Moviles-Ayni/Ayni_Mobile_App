@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.curidev.ayni.feature_auth.ui.signin.SignInScreen
 import com.curidev.ayni.feature_auth.ui.signup.SignUpScreen
+import com.curidev.ayni.feature_order.domain.model.Order
 import com.curidev.ayni.feature_payment.ui.InvoiceScreen
 import com.curidev.ayni.feature_payment.ui.PaymentMastercardMethodScreen
 import com.curidev.ayni.feature_payment.ui.PaymentMethodScreen
@@ -75,7 +76,8 @@ fun Home() {
             val id = navBackStackEntry.arguments?.getInt(Routes.DetailPage.argument) as Int
             ProductDetailScreen(
                 navController,
-                navigateToPayment = {navController.navigate(Routes.PaymentSummary.route)},
+                navigateToPayment = {
+                    navController.navigate("${Routes.PaymentSummary.route}/$it")},
                 id,
                 navigateToHome = {navController.navigate(Routes.ProductPage.route)},
                 navigateToProducts = {navController.navigate(Routes.MarketPage.route)},
@@ -107,33 +109,96 @@ fun Home() {
                 navigateToOrders = {navController.navigate(Routes.OrdersScreen.route)},
                 navigateToReviews = {navController.navigate(Routes.RatesListScrin.route)})
         }
-        composable(Routes.PaymentSummary.route) {
+        composable(Routes.PaymentSummary.routeWithArgument,
+            arguments = listOf(navArgument(Routes.PaymentSummary.argument) {
+                type = NavType.IntType
+            })
+        ) {navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getInt(Routes.PaymentSummary.argument) as Int
             PaymentSummaryScreen(
+                id,
                 navController,
-                navigateToPaymentMethod = { navController.navigate(Routes.PaymentMethod.route) }
+                navigateToPaymentMethod = { saleId, quantity ->
+                    navController.navigate("${Routes.PaymentMethod.route}/$saleId/$quantity")
+                }
             )
         }
-        composable(Routes.PaymentMethod.route) {
+        composable(route = Routes.PaymentMethod.routeWithArgument,
+            arguments = listOf(
+                navArgument(Routes.PaymentMethod.idArgument) {
+                    type = NavType.IntType
+                },
+                navArgument(Routes.PaymentMethod.quantityArgument) {
+                    type = NavType.IntType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getInt(Routes.PaymentMethod.idArgument) as Int
+            val quantity = navBackStackEntry.arguments?.getInt(Routes.PaymentMethod.quantityArgument) as Int
             PaymentMethodScreen(
+                id,
+                quantity,
                 navController,
-                navigateToMastercardMethod = { navController.navigate(Routes.PaymentMethod.MastercardMethod.route) },
-                navigateToVisaMethod = { navController.navigate(Routes.PaymentMethod.VisaMethod.route) }
+                navigateToMastercardMethod = { saleId, quantity ->
+                    navController.navigate("${Routes.PaymentMethod.MastercardMethod.route}/${saleId}/${quantity}") },
+                navigateToVisaMethod = { saleId, quantity ->
+                    navController.navigate("${Routes.PaymentMethod.VisaMethod.route}/${saleId}/${quantity}") }
             )
         }
-        composable(Routes.PaymentMethod.MastercardMethod.route) {
+        composable(
+            Routes.PaymentMethod.MastercardMethod.routeWithArgument,
+            arguments = listOf(
+                navArgument(Routes.PaymentMethod.MastercardMethod.idArgument) {
+                    type = NavType.IntType
+                },
+                navArgument(Routes.PaymentMethod.MastercardMethod.quantityArgument) {
+                    type = NavType.IntType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getInt(Routes.PaymentMethod.MastercardMethod.idArgument) as Int
+            val quantity = navBackStackEntry.arguments?.getInt(Routes.PaymentMethod.MastercardMethod.quantityArgument) as Int
             PaymentMastercardMethodScreen(
+                id,
+                quantity,
                 navController,
-                navigateToInvoice = { navController.navigate(Routes.Invoice.route) }
+                navigateToInvoice = { orderId ->
+                    navController.navigate("${Routes.Invoice.route}/${orderId}")
+                }
             )
         }
-        composable(Routes.PaymentMethod.VisaMethod.route) {
+        composable(
+            route = Routes.PaymentMethod.VisaMethod.routeWithArgument,
+            arguments = listOf(
+                navArgument(Routes.PaymentMethod.VisaMethod.idArgument) {
+                    type = NavType.IntType
+                },
+                navArgument(Routes.PaymentMethod.VisaMethod.quantityArgument) {
+                    type = NavType.IntType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getInt(Routes.PaymentMethod.VisaMethod.idArgument) as Int
+            val quantity = navBackStackEntry.arguments?.getInt(Routes.PaymentMethod.VisaMethod.quantityArgument) as Int
             PaymentVisaMethodScreen(
+                id,
+                quantity,
                 navController,
-                navigateToInvoice = { navController.navigate(Routes.Invoice.route) }
+                navigateToInvoice = { orderId ->
+                    navController.navigate("${Routes.Invoice.route}/${orderId}")
+                }
             )
         }
-        composable(Routes.Invoice.route){
+        composable(Routes.Invoice.routeWithArgument,
+            listOf(
+                navArgument(Routes.Invoice.argument) {
+                    type = NavType.IntType
+                }
+            )
+        ){ navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getInt(Routes.Invoice.argument) as Int
             InvoiceScreen(
+                id,
                 navController,
                 navigateToProducts = {navController.navigate(Routes.MarketPage.route)},
             )
@@ -192,12 +257,29 @@ sealed class Routes(val route: String) {
         const val routeWithArgument = "OrderDetails/{id}"
         const val argument = "id"
     }
-    data object PaymentSummary: Routes("PaymentSummary")
-    data object PaymentMethod: Routes("PaymentMethod") {
-        data object VisaMethod: Routes("VisaMethod")
-        data object MastercardMethod: Routes("MastercardMethod")
+    data object PaymentSummary: Routes("PaymentSummaryScreen") {
+        const val routeWithArgument = "PaymentSummaryScreen/{id}"
+        const val argument = "id"
     }
-    data object Invoice: Routes("Payment")
+    data object PaymentMethod: Routes("PaymentMethodScreen") {
+        const val routeWithArgument = "PaymentMethodScreen/{id}/{quantity}"
+        const val idArgument = "id"
+        const val quantityArgument = "quantity"
+        data object VisaMethod: Routes("VisaMethodScreen") {
+            const val routeWithArgument = "VisaMethodScreen/{id}/{quantity}"
+            const val idArgument = "id"
+            const val quantityArgument = "quantity"
+        }
+        data object MastercardMethod: Routes("MastercardMethodScreen"){
+            const val routeWithArgument = "MastercardMethodScreen/{id}/{quantity}"
+            const val idArgument = "id"
+            const val quantityArgument = "quantity"
+        }
+    }
+    data object Invoice: Routes("InvoiceScreen"){
+        const val routeWithArgument = "InvoiceScreen/{id}"
+        const val argument = "id"
+    }
     object RatesListScrin : Routes("RatesListScrin")
     object RateDetailsFloatingCard : Routes("RateDetailsFloatingCard") {
         const val routeWithArgument = "RateDetailsFloatingCard/{id}"

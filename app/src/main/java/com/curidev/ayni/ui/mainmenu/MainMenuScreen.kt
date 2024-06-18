@@ -31,8 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.curidev.ayni.feature_product.data.repository.ProductRepository
-import com.curidev.ayni.feature_product.domain.model.Product
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.ProductTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
@@ -90,12 +90,12 @@ fun MainMenuScreen(
 }
 
 @Composable
-fun ProductsLatest(productRepository: ProductRepository = ProductRepository(), selectProduct: (Int) -> Unit) {
+fun ProductsLatest(saleRepository: SaleRepository = SaleRepository(), selectProduct: (Int) -> Unit) {
     val products = remember {
-        mutableStateOf(emptyList<Product>())
+        mutableStateOf(emptyList<Sale>())
     }
 
-    productRepository.getAll {
+    saleRepository.getAll {
         products.value = it
     }
 
@@ -104,7 +104,7 @@ fun ProductsLatest(productRepository: ProductRepository = ProductRepository(), s
         val timerTask = object : TimerTask() {
             override fun run() {
                 try {
-                    productRepository.getAll { productDeals ->
+                    saleRepository.getAll { productDeals ->
                         products.value = productDeals.shuffled()
                     }
                 } catch (e: Exception) {
@@ -127,18 +127,18 @@ fun ProductsLatest(productRepository: ProductRepository = ProductRepository(), s
 }
 
 @Composable
-fun ProductPurchase(product: Product, selectProduct: (Int) -> Unit){
+fun ProductPurchase(sale: Sale, selectProduct: (Int) -> Unit){
     Card(
         modifier = Modifier
             .padding(end = 16.dp)
-            .clickable(onClick = { selectProduct(product.id) })
+            .clickable(onClick = { selectProduct(sale.id) })
             .width(110.dp)
             .height(140.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
         Box {
             GlideImage(
-                imageModel = { product.imageUrl },
+                imageModel = { sale.imageUrl },
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(10.dp))
@@ -150,12 +150,7 @@ fun ProductPurchase(product: Product, selectProduct: (Int) -> Unit){
                     .padding(16.dp)
             ) {
                 Text(
-                    text = product.name,
-                    fontStyle = FontStyle.Normal,
-                    color = Color.White
-                )
-                Text(
-                    text = "${product.recommendedGrowingClimate}",
+                    text = sale.name,
                     fontStyle = FontStyle.Normal,
                     color = Color.White
                 )
@@ -208,17 +203,17 @@ fun SearchField(){
 }
 
 @Composable
-fun ProductsList(productRepository: ProductRepository = ProductRepository(), selectProduct: (Int) -> Unit) {
+fun ProductsList(saleRepository: SaleRepository = SaleRepository(), selectProduct: (Int) -> Unit) {
     val products = remember {
-        mutableStateOf(emptyList<Product>())
+        mutableStateOf(emptyList<Sale>())
     }
 
-    productRepository.getAll {
+    saleRepository.getAll {
         products.value = it
     }
 
     try {
-        productRepository.getAll { productList ->
+        saleRepository.getAll { productList ->
             products.value = productList
         }
     } catch (e: Exception) {
@@ -233,17 +228,17 @@ fun ProductsList(productRepository: ProductRepository = ProductRepository(), sel
 }
 
 @Composable
-fun ProductItem(product: Product, selectProduct: (Int) -> Unit) {
-    val name = product.name
-    val description = if (product.description.length > 50) {
-        "${product.description.substring(0, 50)}..."
+fun ProductItem(sale: Sale, selectProduct: (Int) -> Unit) {
+    val name = sale.name
+    val description = if (sale.description.length > 50) {
+        "${sale.description.substring(0, 50)}..."
     } else {
-        product.description
+        sale.description
     }
 
     Row(
         modifier = Modifier
-            .clickable(onClick = { selectProduct(product.id) })
+            .clickable(onClick = { selectProduct(sale.id) })
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -255,7 +250,7 @@ fun ProductItem(product: Product, selectProduct: (Int) -> Unit) {
         }
 
         GlideImage(
-            imageModel = { product.imageUrl },
+            imageModel = { sale.imageUrl },
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)

@@ -31,23 +31,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.curidev.ayni.feature_product.data.repository.ProductRepository
-import com.curidev.ayni.feature_product.domain.model.Product
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
 
 val myGreenColor = Color(0xFF3EAF2C)
 @Composable
 fun RateOpinion(navController: NavController, id: Int){
-    val product = remember {
-        mutableStateOf<Product?>(null)
+    val sale = remember {
+        mutableStateOf<Sale?>(null)
     }
 
-    ProductRepository().getProductById(id) { retrievedProduct ->
-        product.value = retrievedProduct
+    SaleRepository().getSaleById(id) { retrievedProduct ->
+        sale.value = retrievedProduct
     }
 
-    product.value?.let {
+    sale.value?.let {
         Scaffold(
             topBar = {
                 FilterTopAppBar("Market", navController)
@@ -59,9 +59,9 @@ fun RateOpinion(navController: NavController, id: Int){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SearchF()
-                ProductImage(product.value!!.imageUrl)
+                ProductImage(sale.value!!.imageUrl)
                 Spacer(modifier = Modifier.height(4.dp))
-                PlantDescription(product.value!!)
+                PlantDescription(sale.value!!)
                 Spacer(modifier = Modifier.height(1.dp))
                 OrderButton()
             }
@@ -70,14 +70,9 @@ fun RateOpinion(navController: NavController, id: Int){
 }
 
 @Composable
-fun PlantDescription(product: Product){
+fun PlantDescription(sale: Sale){
 
-    val recommendedCultivationDistance = product.recommendedCultivationDistance
-    val recommendedCultivationDepth = product.recommendedCultivationDepth
-    val recommendedGrowingClimate = product.recommendedGrowingClimate
-    val recommendedSoilType = product.recommendedSoilType
-    val recommendedGrowingSeason = product.recommendedGrowingSeason
-    val description = product.description
+    val description = sale.description
 
     Column(
         modifier = Modifier
@@ -89,26 +84,6 @@ fun PlantDescription(product: Product){
             style = TextStyle(fontWeight = FontWeight.Bold),
             fontSize = 20.sp,
             modifier = Modifier.padding(16.dp)
-        )
-        Text(
-            text = "Distance: $recommendedCultivationDistance",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Depth: $recommendedCultivationDepth",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Weather: $recommendedGrowingClimate",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Soil: $recommendedSoilType",
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        Text(
-            text = "Season: $recommendedGrowingSeason",
-            modifier = Modifier.padding(start = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
