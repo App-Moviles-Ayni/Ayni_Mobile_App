@@ -21,18 +21,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.curidev.ayni.feature_order.data.repository.OrderRepository
+import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Order
+import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.inputtextfield.InputTextField_Payment
 import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun PaymentVisaMethodScreen (
+    id: Int,
+    quantity: Int,
     navController: NavController,
-    navigateToInvoice: () -> Unit) {
+    navigateToInvoice: (Int) -> Unit)
+{
+    val sale = remember { mutableStateOf<Sale?>(null) }
+
+    SaleRepository().getSaleById(id) { retrievedProduct ->
+        sale.value = retrievedProduct
+    }
+
     Scaffold(
         topBar = {
             PrevNextTopAppBar("Checkout", navController)
         },
-        bottomBar = { BottomConfirmComponent(navigateToInvoice) }
+        bottomBar = {
+            sale.value?.let {
+                BottomConfirmComponent(quantity, it, navigateToInvoice)
+            }
+        }
     ) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)
@@ -85,14 +105,20 @@ fun VisaFormComponent() {
 }
 
 @Composable
-fun BottomConfirmComponent(navigateTo: () -> Unit) {
+fun BottomConfirmComponent(quantity: Int, sale: Sale, navigateTo: (Int) -> Unit) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
             .padding(30.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Button(onClick = { navigateTo() },
+        Button(
+            onClick = {
+                val order = createOrderVisa(sale, quantity)
+                OrderRepository().createOrder(order) { order ->
+                    navigateTo(order.id)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 20.dp)) {
@@ -100,4 +126,22 @@ fun BottomConfirmComponent(navigateTo: () -> Unit) {
         }
     }
 
+}
+
+fun createOrderVisa(sale: Sale, quantity: Int): Order {
+    val totalPrice = quantity.toDouble() * sale.unitPrice
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+    return Order(
+        id = 0,
+        description = sale.description,
+        totalPrice = totalPrice,
+        quantity = quantity,
+        paymentMethod = "Visa",
+        saleId = sale.id,
+        orderedBy = 10,
+        acceptedBy = sale.userId,
+        orderedDate = currentDate,
+        status = "pending"
+    )
 }

@@ -20,31 +20,34 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.curidev.ayni.feature_order.domain.model.Order
 import com.curidev.ayni.shared.ui.topappbar.PrevNextTopAppBar
 
 @Composable
 fun PaymentMethodScreen(
+    id: Int,
+    quantity: Int,
     navController: NavController,
-    navigateToMastercardMethod: () -> Unit,
-    navigateToVisaMethod: () -> Unit,
+    navigateToMastercardMethod: (Int, Int) -> Unit,
+    navigateToVisaMethod: (Int, Int) -> Unit,
 ) {
     Scaffold(
         topBar = {
             PrevNextTopAppBar("Checkout", navController)
         },
-        bottomBar = { BottomProceedComponent() }
+        //bottomBar = { BottomProceedComponent() }
     ) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)
             .padding(25.dp, 0.dp)
         ) {
-            CreditCardComponent(navigateToMastercardMethod, navigateToVisaMethod)
+            CreditCardComponent(id, quantity, navigateToMastercardMethod, navigateToVisaMethod)
         }
     }
 }
 
 @Composable
-fun CreditCardComponent(toMastercardMethod: () -> Unit, toVisaMethod: () -> Unit) {
+fun CreditCardComponent(id: Int, quantity: Int, toMastercardMethod: (Int, Int) -> Unit, toVisaMethod: (Int, Int) -> Unit) {
     Text(
         text = "Payment Method",
         fontWeight = FontWeight.Normal,
@@ -60,9 +63,6 @@ fun CreditCardComponent(toMastercardMethod: () -> Unit, toVisaMethod: () -> Unit
             ){
                 Text(text = "Debit/Credit Card", fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,)
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Add")
-                }
             }
         }
     ) { paddingValues ->
@@ -72,11 +72,11 @@ fun CreditCardComponent(toMastercardMethod: () -> Unit, toVisaMethod: () -> Unit
                 .padding(0.dp, 20.dp)
                 .fillMaxWidth()
         ) {
-            OutlinedButton(onClick = { toMastercardMethod() }) {
+            OutlinedButton(onClick = { toMastercardMethod(id, quantity) }) {
                 Text(text = "MASTERCARD", textAlign = TextAlign.Center, modifier = Modifier.size(300.dp, 20.dp))
             }
             Divider(modifier = Modifier.padding(0.dp, 20.dp))
-            OutlinedButton(onClick = { toVisaMethod() }) {
+            OutlinedButton(onClick = { toVisaMethod(id, quantity) }) {
                 Text(text = "VISA", textAlign = TextAlign.Center, modifier = Modifier.size(300.dp, 20.dp))
             }
         }
