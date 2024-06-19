@@ -105,9 +105,9 @@ fun RateItem(sale: Sale, averageRate: Int, selectSale: (Int) -> Unit) {
                 Row {
                     for (i in 1..5) {
                         if (i <= averageRate) {
-                            Icon(Icons.Filled.Star, contentDescription = "Star", tint = Color(0xFF3EAF2C))
+                            Icon(Icons.Outlined.Star, contentDescription = "Star", tint = Color(0xFF3EAF2C))
                         } else {
-                            Icon(Icons.Outlined.Star, contentDescription = "Star", tint = Color(0xFF000000))
+                            Icon(Icons.Filled.Star, contentDescription = "Star", tint = Color(0xFF000000))
                         }
                     }
                 }

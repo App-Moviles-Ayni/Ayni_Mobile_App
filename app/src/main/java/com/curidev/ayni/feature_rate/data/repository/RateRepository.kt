@@ -2,7 +2,7 @@ package com.curidev.ayni.feature_rate.data.repository
 
 import android.util.Log
 import com.curidev.ayni.feature_product.data.remote.RateResponse
-import com.curidev.ayni.feature_product.data.remote.RateService
+import com.curidev.ayni.feature_rate.data.remote.RateService
 import com.curidev.ayni.feature_product.data.remote.RateServiceFactory
 import com.curidev.ayni.feature_product.domain.model.Rate
 import retrofit2.Call
@@ -12,6 +12,28 @@ import retrofit2.Response
 class RateRepository(
     private val rateService: RateService = RateServiceFactory.getRateService()
 ) {
+    fun createRate(rate: Rate, callback: (Rate) -> Unit) {
+        val createRate = rateService.createRate(rate)
+
+        createRate.enqueue(object: Callback<Rate> {
+            override fun onResponse(
+                call: Call<Rate>,
+                response: Response<Rate>
+            ) {
+                if (response.isSuccessful){
+                    callback(response.body() as Rate)
+                }
+            }
+            override fun onFailure(
+                call: Call<Rate>,
+                t: Throwable
+            ) {
+                t.message?.let {
+                    Log.d("RateRepository", it)
+                }
+            }
+        })
+    }
     fun getAll(callback: (List<Rate>) -> Unit) {
         val getAll = rateService.getAll()
 
