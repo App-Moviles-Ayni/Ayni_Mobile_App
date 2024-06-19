@@ -12,6 +12,9 @@ interface OrderService {
     @POST("orders")
     fun createOrder(@Body order: Order): Call<Order>
 
+    @POST("orders/{orderId}/qualifications")
+    fun qualifyOrder(@Path("orderId") id: Int): Call<Order>
+
     @GET("orders")
     fun getAll(): Call<List<OrderResponse>>
 

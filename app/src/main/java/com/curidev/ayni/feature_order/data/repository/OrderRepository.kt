@@ -32,6 +32,26 @@ class   OrderRepository(
         })
     }
 
+    fun qualifyOrder(id: Int, callback: (Order) -> Unit) {
+        val qualifyOrder = orderService.qualifyOrder(id)
+
+        qualifyOrder.enqueue(object: Callback<Order> {
+            override fun onResponse(
+                call: Call<Order>,
+                response: Response<Order>) {
+                    if (response.isSuccessful) {
+                        callback(response.body() as Order)
+                    }
+                }
+
+            override fun onFailure(call: Call<Order>, t: Throwable) {
+                t.message?.let {
+                    Log.d("OrderRepository", it)
+                }
+            }
+        })
+    }
+
     fun getAll(callback: (List<Order>) -> Unit) {
         val getAll = orderService.getAll()
 

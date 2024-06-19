@@ -1,7 +1,5 @@
 package com.curidev.ayni.feature_rate.ui.ratedetailsfloatingcard
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,9 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.curidev.ayni.feature_order.data.repository.OrderRepository
 import com.curidev.ayni.feature_product.domain.model.Rate
 import com.curidev.ayni.feature_rate.data.repository.RateRepository
 import com.curidev.ayni.feature_order.data.repository.SaleRepository
+import com.curidev.ayni.feature_order.domain.model.Order
 import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
@@ -48,21 +48,29 @@ import java.util.TimeZone
 fun RateDetailsFloatingCard(
     navController: NavController,
     id: Int,
+    orderRepository: OrderRepository = OrderRepository(),
     saleRepository: SaleRepository = SaleRepository(),
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
     navigateToOrders: () -> Unit,
     navigateToReviews: () -> Unit
     ) {
+    val order = remember {
+        mutableStateOf<Order?>(null)
+    }
+
     val sale = remember {
         mutableStateOf<Sale?>(null)
     }
 
-    saleRepository.getSaleById(id) {
-        sale.value = it
+    orderRepository.getOrderById(id) {retrievedOrder->
+        order.value = retrievedOrder
+        saleRepository.getSaleById(retrievedOrder.saleId) {
+            sale.value = it
+        }
     }
 
-    sale.value?.let { sale ->
+    order.value?.let { order ->
         Scaffold(
             topBar = {
                 FilterTopAppBar("Review", navController)
@@ -86,8 +94,10 @@ fun RateDetailsFloatingCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        SaleImage(sale.imageUrl)
-                        RatesOfSale(id, sale, navController)
+                        sale.value?.let {
+                            SaleImage(sale.value?.imageUrl)
+                            RatesOfSale(id, sale.value!!, order, navController, navigateToHome)
+                        }
                     }
                 }
             }
@@ -107,7 +117,9 @@ fun SaleImage(imageUrl: String?) {
 fun RatesOfSale(
     id: Int,
     sale: Sale,
+    order: Order,
     navController: NavController,
+    navigateToHome: () -> Unit,
     rateRepository: RateRepository = RateRepository(),
 ) {
     val rates = remember {
@@ -121,11 +133,16 @@ fun RatesOfSale(
     LazyColumn {
         val filteredRates = rates.value.filter { it.productId == sale.id }
     }
-    RateItem(sale, rateRepository, navController)
+    RateItem(sale, order, rateRepository, navController, navigateToHome)
 }
 
 @Composable
-fun RateItem(sale: Sale, rateRepository: RateRepository, navController: NavController) {
+fun RateItem(
+    sale: Sale,
+    order: Order,
+    rateRepository: RateRepository,
+    navController: NavController,
+    navigateToHome: () -> Unit) {
     var showMessage = remember {
         mutableStateOf(false)
     }
@@ -134,11 +151,11 @@ fun RateItem(sale: Sale, rateRepository: RateRepository, navController: NavContr
     var rating = remember {
         mutableStateOf(0)
     }
-    val userId = sale.userId
+    val userId = order.orderedBy;
     val productId = sale.id;
 
     ListItem(
-        headlineContent = { Text(text = "User") },
+        headlineContent = { Text(text = "Post your rate") },
         supportingContent = {
             val stars = buildString {
                 Column {
@@ -154,7 +171,10 @@ fun RateItem(sale: Sale, rateRepository: RateRepository, navController: NavContr
                                 productId,
                             )
                             RateRepository().createRate(newRate) { rate ->
+                                OrderRepository().qualifyOrder(order.id) { order ->
+                                }
                                 showMessage.value = true
+                                navigateToHome()
                             }
                         }
                     ) {
