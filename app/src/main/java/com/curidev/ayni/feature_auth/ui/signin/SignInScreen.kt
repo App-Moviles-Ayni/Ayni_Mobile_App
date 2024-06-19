@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.curidev.ayni.feature_auth.data.repository.AuthRepository
 import com.curidev.ayni.shared.ui.button.CustomButton1
 import com.curidev.ayni.shared.ui.button.CustomButton2
 import com.curidev.ayni.shared.ui.button.CustomTextButton1
@@ -28,13 +29,13 @@ import com.curidev.ayni.shared.ui.textfield.PasswordTextField
 fun SignInScreen(navigateToWelcomePage: ()-> Unit, navigateToHome: ()-> Unit) {
     val username = remember {
         mutableStateOf("")
-
     }
 
     val password = remember {
         mutableStateOf("")
-
     }
+
+    val authRepository = AuthRepository()
 
     Scaffold {paddingValues ->
 
@@ -49,8 +50,6 @@ fun SignInScreen(navigateToWelcomePage: ()-> Unit, navigateToHome: ()-> Unit) {
             }
         }
 
-
-
         Column(modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally){
@@ -64,7 +63,11 @@ fun SignInScreen(navigateToWelcomePage: ()-> Unit, navigateToHome: ()-> Unit) {
             Spacer(modifier = Modifier.padding(10.dp))
             PasswordTextField(password = password, text = "Password")
             Spacer(modifier = Modifier.padding(25.dp))
-            CustomButton1(text = "Log In", onclick = { navigateToHome() })
+            CustomButton1(text = "Log In", onclick = {
+                authRepository.signIn(username.value, password.value){
+                    navigateToHome()
+                }
+            })
             CustomTextButton1(text = "Forgot your password?") {}
         }
     }

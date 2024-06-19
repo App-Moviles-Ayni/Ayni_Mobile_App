@@ -21,6 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.curidev.ayni.feature_auth.data.repository.AuthRepository
+import com.curidev.ayni.feature_auth.data.repository.UserRepository
+import com.curidev.ayni.feature_auth.domain.model.User
 import com.curidev.ayni.feature_order.domain.model.Order
 import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.feature_order.data.repository.OrderRepository
@@ -37,19 +40,36 @@ fun OrdersScreen(navController: NavController,
                  navigateToOrders: () -> Unit,
                  navigateToReviews: () -> Unit)
 {
-    Scaffold(
-        topBar = {
-            FilterTopAppBar("Orders", navController)
-        },
-        bottomBar = {
-            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews)
-        }
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)){
-            SearchField()
-            OrdersList(selectOrder = selectOrder)
+    val authRepository = AuthRepository()
+
+    val userId = authRepository.getUserId()
+
+    val user = remember {
+        mutableStateOf<User?>(null)
+    }
+
+    if (userId != null) {
+        UserRepository().getUserById(userId.toInt()) { retrievedUser ->
+            user.value = retrievedUser
         }
     }
+
+    user.value?.let {
+        Scaffold(
+            topBar = {
+                FilterTopAppBar("Orders", navController)
+            },
+            bottomBar = {
+                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews)
+            }
+        ) { paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)){
+                SearchField()
+                OrdersList(it.id.toInt(), selectOrder = selectOrder)
+            }
+        }
+    }
+
 }
 
 @Composable
@@ -68,7 +88,7 @@ fun SearchField() {
 }
 
 @Composable
-fun OrdersList(orderRepository: OrderRepository = OrderRepository(), selectOrder: (Int) -> Unit) {
+fun OrdersList(userId: Int, orderRepository: OrderRepository = OrderRepository(), selectOrder: (Int) -> Unit) {
     val orders = remember {
         mutableStateOf(emptyList<Order>())
     }
@@ -79,7 +99,9 @@ fun OrdersList(orderRepository: OrderRepository = OrderRepository(), selectOrder
 
     LazyColumn {
         items(orders.value) {order ->
-            OrderItem(order, selectOrder)
+            if(order.orderedBy == userId) {
+                OrderItem(order, selectOrder)
+            }
         }
     }
 }

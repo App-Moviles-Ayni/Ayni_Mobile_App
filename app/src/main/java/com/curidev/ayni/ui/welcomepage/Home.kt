@@ -7,7 +7,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.curidev.ayni.feature_auth.ui.signin.SignInScreen
 import com.curidev.ayni.feature_auth.ui.signup.SignUpScreen
-import com.curidev.ayni.feature_order.domain.model.Order
 import com.curidev.ayni.feature_payment.ui.InvoiceScreen
 import com.curidev.ayni.feature_payment.ui.PaymentMastercardMethodScreen
 import com.curidev.ayni.feature_payment.ui.PaymentMethodScreen
@@ -17,7 +16,7 @@ import com.curidev.ayni.feature_order.ui.orderdetails.OrderDetails
 import com.curidev.ayni.feature_order.ui.ordersscreen.OrdersScreen
 import com.curidev.ayni.feature_product.ui.detailpage.ProductDetailScreen
 import com.curidev.ayni.feature_product.ui.marketpage.MarketPage
-import com.curidev.ayni.feature_rate.ui.RatesListScrin
+import com.curidev.ayni.feature_rate.ui.marketpage.RatesListScrin
 import com.curidev.ayni.feature_rate.ui.ratedetailsfloatingcard.RateDetailsFloatingCard
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.ui.mainmenu.MainMenuScreen
@@ -40,7 +39,6 @@ fun Home() {
         }
         composable(Routes.SignUp.route) {
             SignUpScreen(
-                navigateToHome = {navController.navigate(Routes.ProductPage.route)},
                 navigateToSignIn = { navController.navigate(Routes.SignIn.route) },
             )
         }
@@ -214,7 +212,7 @@ fun Home() {
         composable(Routes.RatesListScrin.route) {
             RatesListScrin(
                 navController,
-                selectSale = {
+                selectOrder = {
                     navController.navigate("${Routes.RateDetailsFloatingCard.route}/$it")
                 },
                 navigateToHome = {navController.navigate(Routes.ProductPage.route)},

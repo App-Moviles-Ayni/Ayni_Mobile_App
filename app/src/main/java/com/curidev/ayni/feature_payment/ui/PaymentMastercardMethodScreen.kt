@@ -21,6 +21,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.curidev.ayni.feature_auth.data.repository.AuthRepository
+import com.curidev.ayni.feature_auth.data.repository.UserRepository
+import com.curidev.ayni.feature_auth.domain.model.User
 import com.curidev.ayni.feature_order.data.repository.OrderRepository
 import com.curidev.ayni.feature_order.data.repository.SaleRepository
 import com.curidev.ayni.feature_order.domain.model.Order
@@ -44,21 +47,37 @@ fun PaymentMastercardMethodScreen(
         sale.value = retrievedProduct
     }
 
-    Scaffold(
-        topBar = {
-            PrevNextTopAppBar("Checkout", navController)
-        },
-        bottomBar = {
-            sale.value?.let {
-                BottomConfirmMastercardComponent(quantity, it, navigateToInvoice)
-            }
+    val authRepository = AuthRepository()
+
+    val userId = authRepository.getUserId()
+
+    val user = remember {
+        mutableStateOf<User?>(null)
+    }
+
+    if (userId != null) {
+        UserRepository().getUserById(userId.toInt()) { retrievedUser ->
+            user.value = retrievedUser
         }
-    ) { paddingValues ->
-        Column(modifier = Modifier
-            .padding(paddingValues)
-            .padding(25.dp, 0.dp)
-        ) {
-            MastercardFormComponent()
+    }
+
+    user.value?.let {retrievedUser->
+        Scaffold(
+            topBar = {
+                PrevNextTopAppBar("Checkout", navController)
+            },
+            bottomBar = {
+                sale.value?.let {
+                    BottomConfirmMastercardComponent(quantity, it, retrievedUser.id, navigateToInvoice)
+                }
+            }
+        ) { paddingValues ->
+            Column(modifier = Modifier
+                .padding(paddingValues)
+                .padding(25.dp, 0.dp)
+            ) {
+                MastercardFormComponent()
+            }
         }
     }
 }
@@ -105,7 +124,7 @@ fun MastercardFormComponent() {
 }
 
 @Composable
-fun BottomConfirmMastercardComponent(quantity: Int, sale: Sale, navigateTo: (Int) -> Unit) {
+fun BottomConfirmMastercardComponent(quantity: Int, sale: Sale, userId: String, navigateTo: (Int) -> Unit) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -114,7 +133,7 @@ fun BottomConfirmMastercardComponent(quantity: Int, sale: Sale, navigateTo: (Int
     ){
         Button(
             onClick = {
-                val order = createOrder(sale, quantity)
+                val order = createOrder(sale, quantity, userId)
                 OrderRepository().createOrder(order) {order ->
                     navigateTo(order.id)
                 }
@@ -127,7 +146,7 @@ fun BottomConfirmMastercardComponent(quantity: Int, sale: Sale, navigateTo: (Int
     }
 }
 
-fun createOrder(sale: Sale, quantity: Int): Order {
+fun createOrder(sale: Sale, quantity: Int, userId: String): Order {
     val totalPrice = quantity.toDouble() * sale.unitPrice
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
@@ -138,7 +157,7 @@ fun createOrder(sale: Sale, quantity: Int): Order {
         quantity = quantity,
         paymentMethod = "Mastercard",
         saleId = sale.id,
-        orderedBy = 10,
+        orderedBy = userId.toInt(),
         acceptedBy = sale.userId,
         orderedDate = currentDate,
         status = "pending"

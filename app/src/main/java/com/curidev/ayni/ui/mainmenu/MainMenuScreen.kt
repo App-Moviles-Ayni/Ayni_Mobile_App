@@ -31,6 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.curidev.ayni.feature_auth.data.repository.AuthRepository
+import com.curidev.ayni.feature_auth.data.repository.UserRepository
+import com.curidev.ayni.feature_auth.domain.model.User
 import com.curidev.ayni.feature_order.data.repository.SaleRepository
 import com.curidev.ayni.feature_order.domain.model.Sale
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
@@ -49,42 +52,58 @@ fun MainMenuScreen(
     navigateToOrders: () -> Unit,
     navigateToReviews: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            ProductTopAppBar("" )
-        },
-        bottomBar = {
-            BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
+    val authRepository = AuthRepository()
+
+    val userId = authRepository.getUserId()
+
+    val user = remember {
+        mutableStateOf<User?>(null)
+    }
+
+    if (userId != null) {
+        UserRepository().getUserById(userId.toInt()) { retrievedUser ->
+            user.value = retrievedUser
         }
-    ) {  paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)){
-            Spacer(modifier = Modifier.width(8.dp))
-            UserProduct(userName = "Jose")
-            Spacer(modifier = Modifier.width(8.dp))
-            SearchField()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Latest Purchases",
-                    style = TextStyle(fontWeight = FontWeight.Bold)
-                )
-                Text(
-                    text = "See All ->",
-                    color = Color.Red,
-                    modifier = Modifier.clickable { /*TODO*/ }
-                )
+    }
+
+    user.value?.let {
+        Scaffold(
+            topBar = {
+                ProductTopAppBar("" )
+            },
+            bottomBar = {
+                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
             }
-            ProductsLatest(selectProduct = selectProduct)
-            Text(
-                text = "Products In Stock",
-                style = TextStyle(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(16.dp)
-            )
-            ProductsList(selectProduct = selectProduct)
+        ) {  paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)){
+                Spacer(modifier = Modifier.width(8.dp))
+                UserProduct(userName = it.username)
+                Spacer(modifier = Modifier.width(8.dp))
+                SearchField()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Latest Purchases",
+                        style = TextStyle(fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        text = "See All ->",
+                        color = Color.Red,
+                        modifier = Modifier.clickable { /*TODO*/ }
+                    )
+                }
+                ProductsLatest(selectProduct = selectProduct)
+                Text(
+                    text = "Products In Stock",
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(16.dp)
+                )
+                ProductsList(selectProduct = selectProduct)
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ import com.curidev.ayni.shared.ui.textfield.InputTextField
 import com.curidev.ayni.shared.ui.textfield.PasswordTextField
 
 @Composable
-fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
+fun SignUpScreen(navigateToSignIn: () -> Unit) {
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val role = remember { mutableStateOf("") }
@@ -51,7 +51,6 @@ fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
             Spacer(modifier = Modifier.padding(10.dp))
             PasswordTextField(password = password, text = "Password")
             Spacer(modifier = Modifier.padding(25.dp))
-            // Agregamos el evento onclick a CustomButton1
             CustomButton1(text = "Create account", onclick = {
                 AuthRepository().signUp(
                     UserRequest(
@@ -61,8 +60,8 @@ fun SignUpScreen(navigateToHome: () -> Unit, navigateToSignIn: () -> Unit) {
                         password = password.value
                     )
                 ) {
+                    navigateToSignIn()
                 }
-                navigateToHome()
             })
             CustomTextButton1(text = "Already have an account?", navigateToSignIn)
         }
