@@ -1,6 +1,7 @@
 package com.curidev.ayni.ui.mainmenu
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -10,13 +11,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,12 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.curidev.ayni.R
 import com.curidev.ayni.feature_auth.data.repository.AuthRepository
 import com.curidev.ayni.feature_auth.data.repository.UserRepository
 import com.curidev.ayni.feature_auth.domain.model.User
@@ -50,7 +64,8 @@ fun MainMenuScreen(
     navigateToHome: () -> Unit,
     navigateToProducts: () -> Unit,
     navigateToOrders: () -> Unit,
-    navigateToReviews: () -> Unit
+    navigateToReviews: () -> Unit,
+    saleRepository: SaleRepository = SaleRepository()
 ) {
     val authRepository = AuthRepository()
 
@@ -66,66 +81,104 @@ fun MainMenuScreen(
         }
     }
 
+    val sales = remember {
+        mutableStateOf(emptyList<Sale>())
+    }
+    val latestPurchases = remember {
+        mutableStateOf(emptyList<Sale>())
+    }
+
+    fun load() {
+        saleRepository.getAll {
+            sales.value = it
+            latestPurchases.value = it
+        }
+    }
+
+    fun searchSales(query: String) {
+        saleRepository.getSaleByName(query) {
+            sales.value = it
+        }
+    }
+
+    fun shuffleSales() {
+        if (latestPurchases.value.size > 3){
+            latestPurchases.value = latestPurchases.value.shuffled().take(4)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        load()
+    }
+
+
     user.value?.let {
         Scaffold(
             topBar = {
                 ProductTopAppBar("" )
             },
             bottomBar = {
-                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
+                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews, 0)
             }
         ) {  paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)){
-                Spacer(modifier = Modifier.width(8.dp))
-                UserProduct(userName = it.username)
-                Spacer(modifier = Modifier.width(8.dp))
-                SearchField()
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Latest Purchases",
-                        style = TextStyle(fontWeight = FontWeight.Bold)
-                    )
-                    Text(
-                        text = "See All ->",
-                        color = Color.Red,
-                        modifier = Modifier.clickable { /*TODO*/ }
-                    )
-                }
-                ProductsLatest(selectProduct = selectProduct)
-                Text(
-                    text = "Products In Stock",
-                    style = TextStyle(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(16.dp)
+            Box(modifier = Modifier.fillMaxSize()) {
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                        .graphicsLayer(alpha = 0.4f)
                 )
-                ProductsList(selectProduct = selectProduct)
+                Column(modifier = Modifier.padding(paddingValues)){
+                    Spacer(modifier = Modifier.width(8.dp))
+                    UserProduct(userName = it.username)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    SearchField(onSubmit = {
+                        searchSales(it)
+                    })
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Latest Purchases",
+                            style = TextStyle(fontWeight = FontWeight.Bold)
+                        )
+                        Text(
+                            text = "See All ->",
+                            color = Color.Red,
+                            modifier = Modifier.clickable { /*TODO*/ }
+                        )
+                    }
+                    ProductsLatest(
+                        latestPurchases,
+                        { shuffleSales() },
+                        selectProduct = selectProduct)
+                    Text(
+                        text = "Products In Stock",
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    ProductsList(sales, selectProduct = selectProduct)
+                }
             }
+
         }
     }
 }
 
 @Composable
-fun ProductsLatest(saleRepository: SaleRepository = SaleRepository(), selectProduct: (Int) -> Unit) {
-    val products = remember {
-        mutableStateOf(emptyList<Sale>())
-    }
+fun ProductsLatest(products: State<List<Sale>>, shuffleProducts: () -> Unit, selectProduct: (Int) -> Unit) {
 
-    saleRepository.getAll {
-        products.value = it
-    }
 
     LaunchedEffect(true) {
         val timer = Timer()
         val timerTask = object : TimerTask() {
             override fun run() {
                 try {
-                    saleRepository.getAll { productDeals ->
-                        products.value = productDeals.shuffled()
-                    }
+                    shuffleProducts()
                 } catch (e: Exception) {
                     Log.e("ProductsDeals", "Error al obtener la lista de productos: ${e.message}")
                 }
@@ -192,7 +245,7 @@ fun UserProduct(userName: String){
 
 
 @Composable
-fun SearchField(){
+fun SearchField(onSubmit: (String) -> Unit){
 
     var searchtext by remember { mutableStateOf("") }
 
@@ -216,32 +269,46 @@ fun SearchField(){
             placeholder = { Text("Search") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20),
-            textStyle = LocalTextStyle.current.copy(color = Color.Black)
+            textStyle = LocalTextStyle.current.copy(color = Color.Black),
+            trailingIcon = {
+                IconButton(onClick = {
+                    onSubmit(searchtext)
+                }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Search")
+                }
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    onSubmit(searchtext)
+                }
+            )
         )
     }
 }
 
 @Composable
-fun ProductsList(saleRepository: SaleRepository = SaleRepository(), selectProduct: (Int) -> Unit) {
-    val products = remember {
-        mutableStateOf(emptyList<Sale>())
-    }
-
-    saleRepository.getAll {
-        products.value = it
-    }
-
-    try {
-        saleRepository.getAll { productList ->
-            products.value = productList
-        }
-    } catch (e: Exception) {
-        Log.e("ProductsList", "Error al obtener la lista de productos: ${e.message}")
-    }
+fun ProductsList(products: State<List<Sale>>, selectProduct: (Int) -> Unit) {
 
     LazyColumn {
         items(products.value) { product ->
             ProductItem(product, selectProduct)
+        }
+    }
+    if (products.value.isEmpty()) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Nothing found ☹️",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

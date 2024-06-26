@@ -206,7 +206,8 @@ fun Home() {
                 navigateToHome = {navController.navigate(Routes.ProductPage.route)},
                 navigateToProducts = {navController.navigate(Routes.MarketPage.route)},
                 navigateToOrders = {navController.navigate(Routes.OrdersScreen.route)},
-                navigateToReviews = {navController.navigate(Routes.RatesListScrin.route)}
+                navigateToReviews = {navController.navigate(Routes.RatesListScrin.route)},
+                actualView = 5
             )
         }
         composable(Routes.RatesListScrin.route) {

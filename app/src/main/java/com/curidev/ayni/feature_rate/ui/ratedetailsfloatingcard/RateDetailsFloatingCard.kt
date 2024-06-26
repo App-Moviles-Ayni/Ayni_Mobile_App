@@ -76,7 +76,7 @@ fun RateDetailsFloatingCard(
                 FilterTopAppBar("Review", navController)
             },
             bottomBar = {
-                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews)
+                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews, 3)
             }
         ) { paddingValues ->
             Box(

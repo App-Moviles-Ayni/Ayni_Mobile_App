@@ -62,7 +62,7 @@ fun ProductDetailScreen(
                 FilterTopAppBar("Market", navController)
             },
             bottomBar = {
-                BottomNavigationBar(navigateToHome, navigateToProducts, navigateToOrders, navigateToReviews)
+                BottomNavigationBar(navigateToHome, navigateToProducts, navigateToOrders, navigateToReviews, 1)
             },
             floatingActionButton = {
                 OrderButton(sale.value!!, navigateToPayment)

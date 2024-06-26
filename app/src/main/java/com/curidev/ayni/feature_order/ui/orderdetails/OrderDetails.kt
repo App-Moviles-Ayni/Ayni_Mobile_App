@@ -67,7 +67,7 @@ fun OrderDetails(
                     PrevTopAppBar("Order Details", navController)
                 },
                 bottomBar = {
-                    BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews)
+                    BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders,navigateToReviews, 2)
                 }
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {

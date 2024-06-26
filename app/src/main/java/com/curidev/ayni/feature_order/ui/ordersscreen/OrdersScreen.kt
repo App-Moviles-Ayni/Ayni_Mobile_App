@@ -1,7 +1,10 @@
 package com.curidev.ayni.feature_order.ui.ordersscreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,8 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.curidev.ayni.R
 import com.curidev.ayni.feature_auth.data.repository.AuthRepository
 import com.curidev.ayni.feature_auth.data.repository.UserRepository
 import com.curidev.ayni.feature_auth.domain.model.User
@@ -60,13 +67,22 @@ fun OrdersScreen(navController: NavController,
                 FilterTopAppBar("Orders", navController)
             },
             bottomBar = {
-                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews)
+                BottomNavigationBar(navigateToHome,navigateToProducts,navigateToOrders, navigateToReviews, 2)
             }
         ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)){
-                SearchField()
-                OrdersList(it.id.toInt(), selectOrder = selectOrder)
+            Box(modifier = Modifier.fillMaxSize()) {
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                        .graphicsLayer(alpha = 0.4f)
+                )
+                Column(modifier = Modifier.padding(paddingValues)){
+                    OrdersList(it.id.toInt(), selectOrder = selectOrder)
+                }
             }
+
         }
     }
 

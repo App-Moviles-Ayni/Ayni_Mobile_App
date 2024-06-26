@@ -45,6 +45,38 @@ class SaleRepository(
         })
     }
 
+    fun getSaleByName(name:String, callback: (List<Sale>) -> Unit) {
+        val getSalesByName = saleService.getSalesByName(name)
+
+        getSalesByName.enqueue(object: Callback<List<SaleResponse>> {
+            override fun onResponse(
+                call: Call<List<SaleResponse>>,
+                response: Response<List<SaleResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    val salesResponse = response.body() as List<SaleResponse>
+                    val sales = salesResponse.map { salesResponse ->
+                        Sale(
+                            salesResponse.id,
+                            salesResponse.name,
+                            salesResponse.description,
+                            salesResponse.unitPrice,
+                            salesResponse.quantity,
+                            salesResponse.imageUrl,
+                            salesResponse.userId
+                        )
+                    }
+                    callback(sales)
+                }
+            }
+            override fun onFailure(call: Call<List<SaleResponse>>, t: Throwable) {
+                t.message?.let {
+                    Log.d("SaleRepository", it)
+                }
+            }
+        })
+    }
+
     fun getSaleById(id: Int, callback: (Sale) -> Unit) {
         val getSaleById = saleService.getSaleById(saleId = id)
 
