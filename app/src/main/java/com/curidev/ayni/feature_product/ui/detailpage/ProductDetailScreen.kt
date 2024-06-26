@@ -73,7 +73,6 @@ fun ProductDetailScreen(
                 .padding(paddingValues),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SearchF()
                 ProductImage(sale.value!!.imageUrl)
                 PlantDescription(sale.value!!)
             }
