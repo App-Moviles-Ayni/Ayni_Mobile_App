@@ -1,4 +1,4 @@
-package com.curidev.ayni.feature_rate.ui.marketpage
+package com.curidev.ayni.feature_rate.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,7 +38,6 @@ import com.curidev.ayni.feature_rate.data.repository.RateRepository
 import com.curidev.ayni.feature_order.data.repository.SaleRepository
 import com.curidev.ayni.feature_order.domain.model.Order
 import com.curidev.ayni.feature_order.domain.model.Sale
-import com.curidev.ayni.feature_order.ui.ordersscreen.SearchField
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.shared.ui.topappbar.FilterTopAppBar
 import com.skydoves.landscapist.glide.GlideImage
@@ -112,7 +111,7 @@ fun RatesList(userId: String, orderRepository: OrderRepository = OrderRepository
 
     LazyColumn {
         items(orders.value) {order ->
-            if(order.orderedBy == userId.toInt()){
+            if(order.orderedBy == userId.toInt() && order.status == "finalized") {
                 val associatedRates = rates.value.filter { it.productId == order.id }
                 val averageRate = if (associatedRates.isNotEmpty()) {
                     associatedRates.map { it.rate }.average().toInt()

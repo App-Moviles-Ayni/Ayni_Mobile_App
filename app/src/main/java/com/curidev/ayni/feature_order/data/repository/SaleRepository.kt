@@ -15,32 +15,39 @@ class SaleRepository(
     fun getAll(callback: (List<Sale>) -> Unit) {
         val getAll = saleService.getAll()
 
-        getAll.enqueue(object: Callback<List<SaleResponse>> {
+        getAll.enqueue(object : Callback<List<SaleResponse>> {
             override fun onResponse(
                 call: Call<List<SaleResponse>>,
-                response: Response<List<SaleResponse>>) {
-                    if (response.isSuccessful) {
-                        val salesResponse = response.body() as List<SaleResponse>
-                        var sales: List<Sale> = emptyList()
-                        for (saleResponse in salesResponse) {
-                            sales = sales + Sale(
-                                saleResponse.id,
-                                saleResponse.name,
-                                saleResponse.description,
-                                saleResponse.unitPrice,
-                                saleResponse.quantity,
-                                saleResponse.imageUrl,
-                                saleResponse.userId
-                            )
-                        }
-                        callback(sales)
+                response: Response<List<SaleResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    val salesResponse = response.body() ?: emptyList()
+                    val sales = mutableListOf<Sale>()
+
+                    for (saleResponse in salesResponse) {
+                        val sale = Sale(
+                            saleResponse.id ?: 0,
+                            saleResponse.name ?: "",
+                            saleResponse.description ?: "",
+                            saleResponse.unitPrice ?: 0.0,
+                            saleResponse.quantity ?: 0,
+                            saleResponse.imageUrl ?: "",
+                            saleResponse.userId ?: 0
+                        )
+                        sales.add(sale)
                     }
+                    callback(sales)
+                } else {
+                    Log.d("SaleRepository", "Failed to get sales: ${response.message()}")
+                    callback(emptyList())
                 }
+            }
 
             override fun onFailure(call: Call<List<SaleResponse>>, t: Throwable) {
                 t.message?.let {
                     Log.d("SaleRepository", it)
                 }
+                callback(emptyList())
             }
         })
     }

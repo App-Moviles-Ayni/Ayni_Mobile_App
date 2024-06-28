@@ -16,8 +16,8 @@ import com.curidev.ayni.feature_order.ui.orderdetails.OrderDetails
 import com.curidev.ayni.feature_order.ui.ordersscreen.OrdersScreen
 import com.curidev.ayni.feature_product.ui.detailpage.ProductDetailScreen
 import com.curidev.ayni.feature_product.ui.marketpage.MarketPage
-import com.curidev.ayni.feature_rate.ui.marketpage.RatesListScrin
-import com.curidev.ayni.feature_rate.ui.ratedetailsfloatingcard.RateDetailsFloatingCard
+import com.curidev.ayni.feature_rate.ui.RatesListScrin
+import com.curidev.ayni.feature_rate.ui.RateDetailsFloatingCard
 import com.curidev.ayni.shared.ui.bottomnavigationbar.BottomNavigationBar
 import com.curidev.ayni.ui.mainmenu.MainMenuScreen
 
